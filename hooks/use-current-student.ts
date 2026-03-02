@@ -22,6 +22,9 @@ type UseCurrentStudentResult = {
   error: string | null
 }
 
+// NOTE: student id is now retrieved from Supabase Auth session instead
+// of manually storing it in localStorage. We keep these helpers only for
+// backwards compatibility for a short period but they are no longer used.
 export function setCurrentStudentId(id: string) {
   if (typeof window === 'undefined') return
   window.localStorage.setItem(STORAGE_KEY, id)
@@ -43,29 +46,36 @@ export function useCurrentStudent(): UseCurrentStudentResult {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    const id = getStoredStudentId()
-    if (!id) {
-      setLoading(false)
-      return
-    }
-
     let cancelled = false
 
-    async function load() {
+    async function loadFromSession() {
       setLoading(true)
       setError(null)
+
       try {
+        // Get authenticated user by auth_id (immutable identity)
+        const { data: { user }, error: userError } = await supabase.auth.getUser()
+
+        if (userError) throw userError
+        const userId = user?.id
+        if (!userId) {
+          setStudent(null)
+          setLoading(false)
+          return
+        }
+
         const { data, error: dbError } = await supabase
           .from('students')
           .select('id, name, email, branch, year, n_points, profile_pic_url')
-          .eq('id', id)
+          .eq('auth_id', userId)
           .maybeSingle()
 
         if (dbError) throw dbError
         if (!data) {
+          // user authenticated but no profile record yet
+          // don't auto-create here - let the user complete the form
           if (!cancelled) {
             setStudent(null)
-            clearCurrentStudentId()
           }
           return
         }
@@ -102,10 +112,24 @@ export function useCurrentStudent(): UseCurrentStudentResult {
       }
     }
 
-    void load()
+    loadFromSession()
+
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        if (session?.user?.email) {
+          void loadFromSession()
+        } else {
+          if (!cancelled) {
+            setStudent(null)
+            setLoading(false)
+          }
+        }
+      },
+    )
 
     return () => {
       cancelled = true
+      authListener?.subscription.unsubscribe()
     }
   }, [])
 

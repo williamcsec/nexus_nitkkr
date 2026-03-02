@@ -1,8 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, Suspense } from "react"
 import Link from "next/link"
-import { useRouter } from "next/navigation"
+import { useRouter, useSearchParams } from "next/navigation"
 import { Eye, EyeOff, Zap, ArrowRight, ArrowLeft, Check } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -10,6 +10,8 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { branches, hostels, interestOptions } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
+import { supabase } from "@/lib/supabaseClient"
+
 
 const steps = [
   { id: 1, title: "Account", description: "Create your login credentials" },
@@ -18,11 +20,47 @@ const steps = [
 ]
 
 export default function GetStartedPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="text-center">
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+          <p className="mt-4 text-muted-foreground">Loading...</p>
+        </div>
+      </div>
+    }>
+      <GetStartedInner />
+    </Suspense>
+  )
+}
+
+function GetStartedInner() {
   const router = useRouter()
+  const searchParams = useSearchParams()
+
+  // prefill email from url query param
+  useEffect(() => {
+    const pre = searchParams.get('email')
+    if (pre) {
+      setEmail(pre)
+    }
+  }, [searchParams])
+
   const [step, setStep] = useState(1)
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [selectedInterests, setSelectedInterests] = useState<string[]>([])
+
+  // form state - initialize email from search params
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState(() => searchParams.get('email') ?? "")
+  const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
+  const [branch, setBranch] = useState("")
+  const [year, setYear] = useState<number | null>(null)
+  const [hostel, setHostel] = useState("")
+  const [phone, setPhone] = useState("")
+  const [error, setError] = useState<string | null>(null)
 
   function toggleInterest(interest: string) {
     setSelectedInterests((prev) =>
@@ -32,11 +70,137 @@ export default function GetStartedPage() {
     )
   }
 
-  function handleNext() {
-    if (step < 3) setStep(step + 1)
-    else {
+  async function handleNext() {
+    setError(null)
+    if (step === 1) {
+      // validate email domain
+      if (!email.endsWith('@nitkkr.ac.in')) {
+        setError("Please use your NITK college email (@nitkkr.ac.in)")
+        return
+      }
+      // validate passwords
+      if (password.length < 8) {
+        setError("Password must be at least 8 characters")
+        return
+      }
+      if (password !== confirmPassword) {
+        setError("Passwords do not match")
+        return
+      }
+      // attempt signup and sign-in so subsequent RPCs run with an authenticated session
       setLoading(true)
-      setTimeout(() => router.push("/dashboard"), 800)
+      const trimmedEmail = email.trim().toLowerCase()
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+        email: trimmedEmail,
+        password,
+        options: {
+          data: { full_name: name?.trim() || trimmedEmail.split('@')[0] },
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=/complete-profile`,
+        },
+      })
+      if (signUpError) {
+        // If user already exists, try signing in instead
+        if (signUpError.message.includes('already registered') || signUpError.message.includes('already been registered')) {
+          const { error: signInError } = await supabase.auth.signInWithPassword({
+            email: trimmedEmail,
+            password,
+          })
+          setLoading(false)
+          if (signInError) {
+            setError(signInError.message)
+            return
+          }
+          setStep(2)
+          return
+        }
+        setLoading(false)
+        setError(signUpError.message)
+        return
+      }
+
+      // If signUp returns a session (auto-confirm enabled), we're already logged in
+      if (signUpData?.session) {
+        setLoading(false)
+        setStep(2)
+        return
+      }
+
+      // Otherwise, try to sign in (email might be auto-confirmed by Supabase)
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: trimmedEmail,
+        password,
+      })
+      setLoading(false)
+      if (signInError) {
+        setError("Account created! Please check your email (" + trimmedEmail + ") to confirm your account, then sign in.")
+        return
+      }
+
+      setStep(2)
+    } else if (step === 2) {
+      // validate step 2 - all required
+      if (!name.trim()) {
+        setError("Full name is required")
+        return
+      }
+      if (name.trim().length < 3) {
+        setError("Name must be at least 3 characters")
+        return
+      }
+      if (!branch) {
+        setError("Please select your branch")
+        return
+      }
+      if (!year) {
+        setError("Please select your year")
+        return
+      }
+      if (!hostel) {
+        setError("Please select your hostel")
+        return
+      }
+      if (!phone.trim()) {
+        setError("Phone number is required")
+        return
+      }
+      setStep(3)
+    } else {
+      // validate step 3 - min 3 interests
+      if (selectedInterests.length < 3) {
+        setError("Please select at least 3 interests")
+        return
+      }
+      // final submit - create student profile via RPC
+      setLoading(true)
+      try {
+        const { data, error } = await supabase.rpc('create_student_profile', {
+          payload: {
+            email: email.trim().toLowerCase(),
+            name: name.trim(),
+            branch,
+            year,
+            hostel,
+            phone: phone.trim(),
+            interests: selectedInterests,
+          },
+        })
+
+        if (error) {
+          throw error
+        }
+
+        // RPC returns array with { id }
+        const newId = data?.[0]?.id ?? null
+        if (newId) {
+          console.log('Created student profile:', newId)
+        }
+
+        router.push('/dashboard')
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to create profile')
+      } finally {
+        setLoading(false)
+      }
     }
   }
 
@@ -76,8 +240,8 @@ export default function GetStartedPage() {
                     step > s.id
                       ? "border-primary bg-primary text-primary-foreground"
                       : step === s.id
-                      ? "border-primary text-primary"
-                      : "border-border text-muted-foreground"
+                        ? "border-primary text-primary"
+                        : "border-border text-muted-foreground"
                   )}
                 >
                   {step > s.id ? <Check className="h-5 w-5" /> : s.id}
@@ -136,6 +300,11 @@ export default function GetStartedPage() {
               {step === 2 && "Help us personalize your experience"}
               {step === 3 && "Select at least 3 topics you love"}
             </p>
+            {error && (
+              <p className="mt-2 text-red-500 text-sm" role="alert">
+                {error}
+              </p>
+            )}
           </div>
 
           {/* Step 1: Account */}
@@ -144,6 +313,8 @@ export default function GetStartedPage() {
               <Label htmlFor="name" className="text-sm text-foreground">Full Name</Label>
               <Input
                 id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 placeholder="Aarav Sharma"
                 className="h-11 border-border bg-secondary/50 text-foreground placeholder:text-muted-foreground focus:border-primary"
               />
@@ -153,6 +324,8 @@ export default function GetStartedPage() {
               <Input
                 id="reg-email"
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="name.roll@nitkkr.ac.in"
                 className="h-11 border-border bg-secondary/50 text-foreground placeholder:text-muted-foreground focus:border-primary"
               />
@@ -163,6 +336,8 @@ export default function GetStartedPage() {
                 <Input
                   id="reg-password"
                   type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="Min 8 characters"
                   className="h-11 border-border bg-secondary/50 pr-10 text-foreground placeholder:text-muted-foreground focus:border-primary"
                 />
@@ -181,6 +356,8 @@ export default function GetStartedPage() {
               <Input
                 id="confirm-password"
                 type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Re-enter your password"
                 className="h-11 border-border bg-secondary/50 text-foreground placeholder:text-muted-foreground focus:border-primary"
               />
@@ -191,11 +368,11 @@ export default function GetStartedPage() {
           <div className={cn("space-y-5 transition-all duration-300", step !== 2 && "hidden")}>
             <div className="space-y-2">
               <Label className="text-sm text-foreground">Branch</Label>
-              <Select>
+              <Select value={branch} onValueChange={(v) => setBranch(v)}>
                 <SelectTrigger className="h-11 border-border bg-secondary/50 text-foreground">
                   <SelectValue placeholder="Select your branch" />
                 </SelectTrigger>
-                <SelectContent className="bg-card border-border">
+                <SelectContent className="z-50 bg-card border-border">
                   {branches.map((b) => (
                     <SelectItem key={b} value={b} className="text-foreground">{b}</SelectItem>
                   ))}
@@ -204,24 +381,31 @@ export default function GetStartedPage() {
             </div>
             <div className="space-y-2">
               <Label className="text-sm text-foreground">Year</Label>
-              <Select>
+              <Select value={year ? String(year) : ""} onValueChange={(v) => {
+                const num = parseInt(v, 10)
+                if (!isNaN(num)) setYear(num)
+                else setYear(null)
+              }}>
                 <SelectTrigger className="h-11 border-border bg-secondary/50 text-foreground">
                   <SelectValue placeholder="Select your year" />
                 </SelectTrigger>
-                <SelectContent className="bg-card border-border">
-                  {["1st Year", "2nd Year", "3rd Year", "4th Year"].map((y) => (
-                    <SelectItem key={y} value={y} className="text-foreground">{y}</SelectItem>
-                  ))}
+                <SelectContent className="z-50 bg-card border-border">
+                  {["1st Year", "2nd Year", "3rd Year", "4th Year"].map((label, idx) => {
+                    const val = String(idx + 1)
+                    return (
+                      <SelectItem key={val} value={val} className="text-foreground">{label}</SelectItem>
+                    )
+                  })}
                 </SelectContent>
               </Select>
             </div>
             <div className="space-y-2">
               <Label className="text-sm text-foreground">Hostel</Label>
-              <Select>
+              <Select value={hostel} onValueChange={(v) => setHostel(v)}>
                 <SelectTrigger className="h-11 border-border bg-secondary/50 text-foreground">
                   <SelectValue placeholder="Select your hostel" />
                 </SelectTrigger>
-                <SelectContent className="bg-card border-border">
+                <SelectContent className="z-50 bg-card border-border">
                   {hostels.map((h) => (
                     <SelectItem key={h} value={h} className="text-foreground">{h}</SelectItem>
                   ))}
@@ -232,6 +416,8 @@ export default function GetStartedPage() {
               <Label htmlFor="phone" className="text-sm text-foreground">Phone Number</Label>
               <Input
                 id="phone"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
                 placeholder="+91 XXXXX XXXXX"
                 className="h-11 border-border bg-secondary/50 text-foreground placeholder:text-muted-foreground focus:border-primary"
               />

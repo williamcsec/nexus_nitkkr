@@ -1,0 +1,1126 @@
+
+> my-project@0.1.0 test:e2e
+> playwright test
+
+
+Running 90 tests using 6 workers
+
+[1A[2K[1/90] [chromium] › tests/auth.spec.ts:63:7 › Registration Flow - Email/Password › should advance to Step 2 after valid email/password
+[1A[2K[2/90] [chromium] › tests/auth.spec.ts:47:7 › Registration Flow - Email/Password › should validate password match on Step 1
+[1A[2K[3/90] [chromium] › tests/auth.spec.ts:79:7 › Registration Flow - Email/Password › should validate all required fields on Step 2
+[1A[2K[4/90] [chromium] › tests/auth.spec.ts:31:7 › Registration Flow - Email/Password › should validate password strength on Step 1
+[1A[2K[5/90] [chromium] › tests/auth.spec.ts:15:7 › Registration Flow - Email/Password › should validate email domain on Step 1
+[1A[2K[6/90] [chromium] › tests/auth.spec.ts:97:7 › Registration Flow - Email/Password › should validate name length on Step 2
+[1A[2K[7/90] [chromium] › tests/auth.spec.ts:118:7 › Registration Flow - Email/Password › should advance to Step 3 after valid profile
+[1A[2K[8/90] [chromium] › tests/auth.spec.ts:160:7 › Registration Flow - Email/Password › should validate minimum 3 interests on Step 3
+[1A[2K[9/90] [chromium] › tests/auth.spec.ts:205:7 › Registration Flow - Email/Password › should call RPC on successful Step 3 submission
+[1A[2K[10/90] [chromium] › tests/auth.spec.ts:268:7 › Sign-in Flow › should validate email on sign-in
+[1A[2K[11/90] [chromium] › tests/auth.spec.ts:281:7 › Sign-in Flow › should display error for non-existent profile
+[1A[2K[12/90] [chromium] › tests/auth.spec.ts:300:7 › Sign-in Flow › should navigate to dashboard on successful login
+[1A[2K[13/90] [chromium] › tests/auth.spec.ts:312:7 › Sign-in Flow › should show OAuth buttons
+[1A[2K[14/90] [chromium] › tests/auth.spec.ts:325:7 › Dashboard Auth Guard › should redirect to sign-in when not authenticated
+[1A[2K[15/90] [chromium] › tests/auth.spec.ts:334:7 › Dashboard Auth Guard › should show loading state while checking auth
+[1A[2K[16/90] [chromium] › tests/auth.spec.ts:350:7 › Navigation and CTAs › CTA section should prefill email on get-started
+[1A[2K[17/90] [chromium] › tests/auth.spec.ts:362:7 › Navigation and CTAs › sign-in page should have link to get-started
+[1A[2K  1) [chromium] › tests/auth.spec.ts:350:7 › Navigation and CTAs › CTA section should prefill email on get-started 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+    Expected: [32m"test@nitkkr.ac.in"[39m
+    Received: [31m""[39m
+
+      357 |     const emailInput = page.locator('input[placeholder="name.roll@nitkkr.ac.in"]');
+      358 |     const value = await emailInput.inputValue();
+    > 359 |     expect(value).toBe(testEmail);
+          |                   ^
+      360 |   });
+      361 |
+      362 |   test('sign-in page should have link to get-started', async ({ page }) => {
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:359:19
+
+    Error Context: test-results/auth-Navigation-and-CTAs-C-c7016-refill-email-on-get-started-chromium/error-context.md
+
+
+[1A[2K  2) [chromium] › tests/auth.spec.ts:362:7 › Navigation and CTAs › sign-in page should have link to get-started 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeTruthy[2m()[22m
+
+    Received: [31mfalse[39m
+
+      366 |     const isVisible = await link.isVisible().catch(() => false);
+      367 |
+    > 368 |     expect(isVisible).toBeTruthy();
+          |                       ^
+      369 |   });
+      370 |
+      371 |   test('get-started page should have link to sign-in', async ({ page }) => {
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:368:23
+
+    Error Context: test-results/auth-Navigation-and-CTAs-s-c1717-ld-have-link-to-get-started-chromium/error-context.md
+
+
+[1A[2K[18/90] [chromium] › tests/auth.spec.ts:371:7 › Navigation and CTAs › get-started page should have link to sign-in
+[1A[2K[19/90] [firefox] › tests/auth.spec.ts:15:7 › Registration Flow - Email/Password › should validate email domain on Step 1
+[1A[2K[20/90] [firefox] › tests/auth.spec.ts:31:7 › Registration Flow - Email/Password › should validate password strength on Step 1
+[1A[2K[21/90] [firefox] › tests/auth.spec.ts:47:7 › Registration Flow - Email/Password › should validate password match on Step 1
+[1A[2K  3) [chromium] › tests/auth.spec.ts:205:7 › Registration Flow - Email/Password › should call RPC on successful Step 3 submission 
+
+    TimeoutError: page.waitForResponse: Timeout 10000ms exceeded while waiting for event "response"
+
+      207 |
+      208 |     // Intercept RPC call
+    > 209 |     const rpcPromise = page.waitForResponse(
+          |                             ^
+      210 |       response => response.url().includes('/rpc/') || response.url().includes('create_student_profile'),
+      211 |       { timeout: 10000 }
+      212 |     );
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:209:29
+
+    Error: locator.click: Test ended.
+    Call log:
+    [2m  - waiting for locator('button:has-text("Select your branch")')[22m
+    [2m    - locator resolved to <button dir="ltr" type="button" role="combobox" data-state="closed" data-placeholder="" data-size="default" aria-expanded="false" aria-autocomplete="none" data-slot="select-trigger" aria-controls="radix-_R_1375esndlb_" class="data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-…>…</button>[22m
+    [2m  - attempting click action[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is not visible[22m
+    [2m    - retrying click action[22m
+    [2m    - waiting 20ms[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is not visible[22m
+    [2m    - retrying click action[22m
+    [2m      - waiting 100ms[22m
+    [2m    15 × waiting for element to be visible, enabled and stable[22m
+    [2m       - element is not visible[22m
+    [2m     - retrying click action[22m
+    [2m       - waiting 500ms[22m
+    [2m    - waiting for element to be visible, enabled and stable[22m
+
+
+      224 |     }
+      225 |
+    > 226 |     await page.locator('button:has-text("Select your branch")').click();
+          |                                                                 ^
+      227 |     await page.locator('text=CSE').first().click();
+      228 |     await page.locator('button:has-text("Select your year")').click();
+      229 |     await page.locator('text=1st Year').click();
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:226:65
+
+    Error Context: test-results/auth-Registration-Flow---E-88e5c-uccessful-Step-3-submission-chromium/error-context.md
+
+
+[1A[2K[22/90] [firefox] › tests/auth.spec.ts:63:7 › Registration Flow - Email/Password › should advance to Step 2 after valid email/password
+[1A[2K[23/90] [firefox] › tests/auth.spec.ts:79:7 › Registration Flow - Email/Password › should validate all required fields on Step 2
+[1A[2K[24/90] [firefox] › tests/auth.spec.ts:97:7 › Registration Flow - Email/Password › should validate name length on Step 2
+[1A[2K[25/90] [firefox] › tests/auth.spec.ts:118:7 › Registration Flow - Email/Password › should advance to Step 3 after valid profile
+[1A[2K[26/90] [firefox] › tests/auth.spec.ts:160:7 › Registration Flow - Email/Password › should validate minimum 3 interests on Step 3
+[1A[2K[27/90] [firefox] › tests/auth.spec.ts:205:7 › Registration Flow - Email/Password › should call RPC on successful Step 3 submission
+[1A[2K[28/90] [firefox] › tests/auth.spec.ts:268:7 › Sign-in Flow › should validate email on sign-in
+[1A[2K[29/90] [firefox] › tests/auth.spec.ts:281:7 › Sign-in Flow › should display error for non-existent profile
+[1A[2K[30/90] [firefox] › tests/auth.spec.ts:300:7 › Sign-in Flow › should navigate to dashboard on successful login
+[1A[2K  4) [chromium] › tests/auth.spec.ts:118:7 › Registration Flow - Email/Password › should advance to Step 3 after valid profile 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('text=CSE').first()[22m
+    [2m    - locator resolved to <div class="flex flex-wrap gap-2">…</div>[22m
+    [2m  - attempting click action[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is not visible[22m
+    [2m    - retrying click action[22m
+    [2m    - waiting 20ms[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is not visible[22m
+    [2m    - retrying click action[22m
+    [2m      - waiting 100ms[22m
+    [2m    51 × waiting for element to be visible, enabled and stable[22m
+    [2m       - element is not visible[22m
+    [2m     - retrying click action[22m
+    [2m       - waiting 500ms[22m
+
+
+      134 |     // Select branch (first dropdown on this form)
+      135 |     await page.locator('button:has-text("Select your branch")').click();
+    > 136 |     await page.locator('text=CSE').first().click();
+          |                                            ^
+      137 |
+      138 |     // Select year
+      139 |     await page.locator('button:has-text("Select your year")').click();
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:136:44
+
+    Error Context: test-results/auth-Registration-Flow---E-16503--Step-3-after-valid-profile-chromium/error-context.md
+
+
+[1A[2K  5) [chromium] › tests/auth.spec.ts:160:7 › Registration Flow - Email/Password › should validate minimum 3 interests on Step 3 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('text=CSE').first()[22m
+    [2m    - locator resolved to <div class="flex flex-wrap gap-2">…</div>[22m
+    [2m  - attempting click action[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is not visible[22m
+    [2m    - retrying click action[22m
+    [2m    - waiting 20ms[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is not visible[22m
+    [2m    - retrying click action[22m
+    [2m      - waiting 100ms[22m
+    [2m    51 × waiting for element to be visible, enabled and stable[22m
+    [2m       - element is not visible[22m
+    [2m     - retrying click action[22m
+    [2m       - waiting 500ms[22m
+
+
+      174 |
+      175 |     await page.locator('button:has-text("Select your branch")').click();
+    > 176 |     await page.locator('text=CSE').first().click();
+          |                                            ^
+      177 |     await page.locator('button:has-text("Select your year")').click();
+      178 |     await page.locator('text=1st Year').click();
+      179 |     await page.locator('button:has-text("Select your hostel")').click();
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:176:44
+
+    Error Context: test-results/auth-Registration-Flow---E-f6bb4-nimum-3-interests-on-Step-3-chromium/error-context.md
+
+
+[1A[2K[31/90] [firefox] › tests/auth.spec.ts:334:7 › Dashboard Auth Guard › should show loading state while checking auth
+[1A[2K[32/90] [firefox] › tests/auth.spec.ts:350:7 › Navigation and CTAs › CTA section should prefill email on get-started
+[1A[2K[33/90] [firefox] › tests/auth.spec.ts:312:7 › Sign-in Flow › should show OAuth buttons
+[1A[2K[34/90] [firefox] › tests/auth.spec.ts:325:7 › Dashboard Auth Guard › should redirect to sign-in when not authenticated
+[1A[2K  6) [firefox] › tests/auth.spec.ts:350:7 › Navigation and CTAs › CTA section should prefill email on get-started 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+    Expected: [32m"test@nitkkr.ac.in"[39m
+    Received: [31m""[39m
+
+      357 |     const emailInput = page.locator('input[placeholder="name.roll@nitkkr.ac.in"]');
+      358 |     const value = await emailInput.inputValue();
+    > 359 |     expect(value).toBe(testEmail);
+          |                   ^
+      360 |   });
+      361 |
+      362 |   test('sign-in page should have link to get-started', async ({ page }) => {
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:359:19
+
+    Error Context: test-results/auth-Navigation-and-CTAs-C-c7016-refill-email-on-get-started-firefox/error-context.md
+
+
+[1A[2K[35/90] [firefox] › tests/auth.spec.ts:362:7 › Navigation and CTAs › sign-in page should have link to get-started
+[1A[2K  7) [firefox] › tests/auth.spec.ts:205:7 › Registration Flow - Email/Password › should call RPC on successful Step 3 submission 
+
+    TimeoutError: page.waitForResponse: Timeout 10000ms exceeded while waiting for event "response"
+
+      207 |
+      208 |     // Intercept RPC call
+    > 209 |     const rpcPromise = page.waitForResponse(
+          |                             ^
+      210 |       response => response.url().includes('/rpc/') || response.url().includes('create_student_profile'),
+      211 |       { timeout: 10000 }
+      212 |     );
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:209:29
+
+    Error: locator.click: Test ended.
+    Call log:
+    [2m  - waiting for locator('button:has-text("Select your branch")')[22m
+    [2m    - locator resolved to <button dir="ltr" type="button" role="combobox" data-state="closed" data-placeholder="" data-size="default" aria-expanded="false" aria-autocomplete="none" data-slot="select-trigger" aria-controls="radix-_R_1375esndlb_" class="data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-…>…</button>[22m
+    [2m  - attempting click action[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is not visible[22m
+    [2m    - retrying click action[22m
+    [2m    - waiting 20ms[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is not visible[22m
+    [2m    - retrying click action[22m
+    [2m      - waiting 100ms[22m
+    [2m    16 × waiting for element to be visible, enabled and stable[22m
+    [2m       - element is not visible[22m
+    [2m     - retrying click action[22m
+    [2m       - waiting 500ms[22m
+
+
+      224 |     }
+      225 |
+    > 226 |     await page.locator('button:has-text("Select your branch")').click();
+          |                                                                 ^
+      227 |     await page.locator('text=CSE').first().click();
+      228 |     await page.locator('button:has-text("Select your year")').click();
+      229 |     await page.locator('text=1st Year').click();
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:226:65
+
+    Error Context: test-results/auth-Registration-Flow---E-88e5c-uccessful-Step-3-submission-firefox/error-context.md
+
+
+[1A[2K[36/90] [firefox] › tests/auth.spec.ts:371:7 › Navigation and CTAs › get-started page should have link to sign-in
+[1A[2K[37/90] [webkit] › tests/auth.spec.ts:15:7 › Registration Flow - Email/Password › should validate email domain on Step 1
+[1A[2K[38/90] [webkit] › tests/auth.spec.ts:31:7 › Registration Flow - Email/Password › should validate password strength on Step 1
+[1A[2K  8) [firefox] › tests/auth.spec.ts:362:7 › Navigation and CTAs › sign-in page should have link to get-started 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeTruthy[2m()[22m
+
+    Received: [31mfalse[39m
+
+      366 |     const isVisible = await link.isVisible().catch(() => false);
+      367 |
+    > 368 |     expect(isVisible).toBeTruthy();
+          |                       ^
+      369 |   });
+      370 |
+      371 |   test('get-started page should have link to sign-in', async ({ page }) => {
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:368:23
+
+    Error Context: test-results/auth-Navigation-and-CTAs-s-c1717-ld-have-link-to-get-started-firefox/error-context.md
+
+
+[1A[2K[39/90] [webkit] › tests/auth.spec.ts:47:7 › Registration Flow - Email/Password › should validate password match on Step 1
+[1A[2K[40/90] [webkit] › tests/auth.spec.ts:63:7 › Registration Flow - Email/Password › should advance to Step 2 after valid email/password
+[1A[2K  9) [firefox] › tests/auth.spec.ts:118:7 › Registration Flow - Email/Password › should advance to Step 3 after valid profile 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.fill: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('input[placeholder="Aarav Sharma"]').first()[22m
+    [2m    - locator resolved to <input value="" id="name" data-slot="input" placeholder="Aarav Sharma" class="file:text-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 w-full min-w-0 rounded-md border px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:border-ring focus-visible:ring-ring/…/>[22m
+    [2m    - fill("Test User")[22m
+    [2m  - attempting fill action[22m
+    [2m    2 × waiting for element to be visible, enabled and editable[22m
+    [2m      - element is not visible[22m
+    [2m    - retrying fill action[22m
+    [2m    - waiting 20ms[22m
+    [2m    2 × waiting for element to be visible, enabled and editable[22m
+    [2m      - element is not visible[22m
+    [2m    - retrying fill action[22m
+    [2m      - waiting 100ms[22m
+    [2m    50 × waiting for element to be visible, enabled and editable[22m
+    [2m       - element is not visible[22m
+    [2m     - retrying fill action[22m
+    [2m       - waiting 500ms[22m
+
+
+      129 |     const nameInputs = await page.locator('input[placeholder="Aarav Sharma"]').all();
+      130 |     if (nameInputs.length > 0) {
+    > 131 |       await nameInputs[0].fill('Test User');
+          |                           ^
+      132 |     }
+      133 |
+      134 |     // Select branch (first dropdown on this form)
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:131:27
+
+    Error Context: test-results/auth-Registration-Flow---E-16503--Step-3-after-valid-profile-firefox/error-context.md
+
+
+[1A[2K  10) [firefox] › tests/auth.spec.ts:160:7 › Registration Flow - Email/Password › should validate minimum 3 interests on Step 3 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('text=CSE').first()[22m
+    [2m    - locator resolved to <div class="flex flex-wrap gap-2">…</div>[22m
+    [2m  - attempting click action[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is not visible[22m
+    [2m    - retrying click action[22m
+    [2m    - waiting 20ms[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is not visible[22m
+    [2m    - retrying click action[22m
+    [2m      - waiting 100ms[22m
+    [2m    47 × waiting for element to be visible, enabled and stable[22m
+    [2m       - element is not visible[22m
+    [2m     - retrying click action[22m
+    [2m       - waiting 500ms[22m
+
+
+      174 |
+      175 |     await page.locator('button:has-text("Select your branch")').click();
+    > 176 |     await page.locator('text=CSE').first().click();
+          |                                            ^
+      177 |     await page.locator('button:has-text("Select your year")').click();
+      178 |     await page.locator('text=1st Year').click();
+      179 |     await page.locator('button:has-text("Select your hostel")').click();
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:176:44
+
+    Error Context: test-results/auth-Registration-Flow---E-f6bb4-nimum-3-interests-on-Step-3-firefox/error-context.md
+
+
+[1A[2K[41/90] [webkit] › tests/auth.spec.ts:79:7 › Registration Flow - Email/Password › should validate all required fields on Step 2
+[1A[2K[42/90] [webkit] › tests/auth.spec.ts:97:7 › Registration Flow - Email/Password › should validate name length on Step 2
+[1A[2K[43/90] [webkit] › tests/auth.spec.ts:118:7 › Registration Flow - Email/Password › should advance to Step 3 after valid profile
+[1A[2K  11) [webkit] › tests/auth.spec.ts:63:7 › Registration Flow - Email/Password › should advance to Step 2 after valid email/password 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('h2:has-text("Complete your profile")')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('h2:has-text("Complete your profile")')[22m
+
+
+      74 |     // Should be on Step 2 - check for profile fields
+      75 |     const heading = page.locator('h2:has-text("Complete your profile")');
+    > 76 |     await expect(heading).toBeVisible({ timeout: 5000 });
+         |                           ^
+      77 |   });
+      78 |
+      79 |   test('should validate all required fields on Step 2', async ({ page }) => {
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:76:27
+
+    Error Context: test-results/auth-Registration-Flow---E-e46eb--after-valid-email-password-webkit/error-context.md
+
+
+[1A[2K  12) [webkit] › tests/auth.spec.ts:31:7 › Registration Flow - Email/Password › should validate password strength on Step 1 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('text=Password must be at least 8 characters')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('text=Password must be at least 8 characters')[22m
+
+
+      42 |     // Should show error
+      43 |     const error = page.locator('text=Password must be at least 8 characters');
+    > 44 |     await expect(error).toBeVisible();
+         |                         ^
+      45 |   });
+      46 |
+      47 |   test('should validate password match on Step 1', async ({ page }) => {
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:44:25
+
+    Error Context: test-results/auth-Registration-Flow---E-1d242-password-strength-on-Step-1-webkit/error-context.md
+
+
+[1A[2K  13) [webkit] › tests/auth.spec.ts:47:7 › Registration Flow - Email/Password › should validate password match on Step 1 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('text=Passwords do not match')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('text=Passwords do not match')[22m
+
+
+      58 |     // Should show error
+      59 |     const error = page.locator('text=Passwords do not match');
+    > 60 |     await expect(error).toBeVisible();
+         |                         ^
+      61 |   });
+      62 |
+      63 |   test('should advance to Step 2 after valid email/password', async ({ page }) => {
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:60:25
+
+    Error Context: test-results/auth-Registration-Flow---E-883c1-te-password-match-on-Step-1-webkit/error-context.md
+
+
+[1A[2K  14) [webkit] › tests/auth.spec.ts:97:7 › Registration Flow - Email/Password › should validate name length on Step 2 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('text=Name must be at least 3 characters')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('text=Name must be at least 3 characters')[22m
+
+
+      112 |
+      113 |       const error = page.locator('text=Name must be at least 3 characters');
+    > 114 |       await expect(error).toBeVisible();
+          |                           ^
+      115 |     }
+      116 |   });
+      117 |
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:114:27
+
+    Error Context: test-results/auth-Registration-Flow---E-9f76a-idate-name-length-on-Step-2-webkit/error-context.md
+
+
+[1A[2K  15) [webkit] › tests/auth.spec.ts:79:7 › Registration Flow - Email/Password › should validate all required fields on Step 2 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('text=Full name is required')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('text=Full name is required')[22m
+
+
+      92 |     // Should show error about name
+      93 |     const error = page.locator('text=Full name is required');
+    > 94 |     await expect(error).toBeVisible();
+         |                         ^
+      95 |   });
+      96 |
+      97 |   test('should validate name length on Step 2', async ({ page }) => {
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:94:25
+
+    Error Context: test-results/auth-Registration-Flow---E-85367-l-required-fields-on-Step-2-webkit/error-context.md
+
+
+[1A[2K[44/90] [webkit] › tests/auth.spec.ts:160:7 › Registration Flow - Email/Password › should validate minimum 3 interests on Step 3
+[1A[2K[45/90] [webkit] › tests/auth.spec.ts:205:7 › Registration Flow - Email/Password › should call RPC on successful Step 3 submission
+[1A[2K[46/90] [webkit] › tests/auth.spec.ts:268:7 › Sign-in Flow › should validate email on sign-in
+[1A[2K[47/90] [webkit] › tests/auth.spec.ts:300:7 › Sign-in Flow › should navigate to dashboard on successful login
+[1A[2K[48/90] [webkit] › tests/auth.spec.ts:281:7 › Sign-in Flow › should display error for non-existent profile
+[1A[2K[49/90] [webkit] › tests/auth.spec.ts:312:7 › Sign-in Flow › should show OAuth buttons
+[1A[2K[50/90] [webkit] › tests/auth.spec.ts:325:7 › Dashboard Auth Guard › should redirect to sign-in when not authenticated
+[1A[2K[51/90] [webkit] › tests/auth.spec.ts:334:7 › Dashboard Auth Guard › should show loading state while checking auth
+[1A[2K[52/90] [webkit] › tests/auth.spec.ts:350:7 › Navigation and CTAs › CTA section should prefill email on get-started
+[1A[2K[53/90] [webkit] › tests/auth.spec.ts:362:7 › Navigation and CTAs › sign-in page should have link to get-started
+[1A[2K[54/90] [webkit] › tests/auth.spec.ts:371:7 › Navigation and CTAs › get-started page should have link to sign-in
+[1A[2K  16) [webkit] › tests/auth.spec.ts:350:7 › Navigation and CTAs › CTA section should prefill email on get-started 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+    Expected: [32m"test@nitkkr.ac.in"[39m
+    Received: [31m""[39m
+
+      357 |     const emailInput = page.locator('input[placeholder="name.roll@nitkkr.ac.in"]');
+      358 |     const value = await emailInput.inputValue();
+    > 359 |     expect(value).toBe(testEmail);
+          |                   ^
+      360 |   });
+      361 |
+      362 |   test('sign-in page should have link to get-started', async ({ page }) => {
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:359:19
+
+    Error Context: test-results/auth-Navigation-and-CTAs-C-c7016-refill-email-on-get-started-webkit/error-context.md
+
+
+[1A[2K  17) [webkit] › tests/auth.spec.ts:362:7 › Navigation and CTAs › sign-in page should have link to get-started 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeTruthy[2m()[22m
+
+    Received: [31mfalse[39m
+
+      366 |     const isVisible = await link.isVisible().catch(() => false);
+      367 |
+    > 368 |     expect(isVisible).toBeTruthy();
+          |                       ^
+      369 |   });
+      370 |
+      371 |   test('get-started page should have link to sign-in', async ({ page }) => {
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:368:23
+
+    Error Context: test-results/auth-Navigation-and-CTAs-s-c1717-ld-have-link-to-get-started-webkit/error-context.md
+
+
+[1A[2K[55/90] [Mobile Chrome] › tests/auth.spec.ts:15:7 › Registration Flow - Email/Password › should validate email domain on Step 1
+[1A[2K[56/90] [Mobile Chrome] › tests/auth.spec.ts:31:7 › Registration Flow - Email/Password › should validate password strength on Step 1
+[1A[2K[57/90] [Mobile Chrome] › tests/auth.spec.ts:47:7 › Registration Flow - Email/Password › should validate password match on Step 1
+[1A[2K  18) [webkit] › tests/auth.spec.ts:205:7 › Registration Flow - Email/Password › should call RPC on successful Step 3 submission 
+
+    TimeoutError: page.waitForResponse: Timeout 10000ms exceeded while waiting for event "response"
+
+      207 |
+      208 |     // Intercept RPC call
+    > 209 |     const rpcPromise = page.waitForResponse(
+          |                             ^
+      210 |       response => response.url().includes('/rpc/') || response.url().includes('create_student_profile'),
+      211 |       { timeout: 10000 }
+      212 |     );
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:209:29
+
+    Error: locator.click: Test ended.
+    Call log:
+    [2m  - waiting for locator('button:has-text("Select your branch")')[22m
+    [2m    - locator resolved to <button dir="ltr" type="button" role="combobox" data-state="closed" data-placeholder="" data-size="default" aria-expanded="false" aria-autocomplete="none" data-slot="select-trigger" aria-controls="radix-_R_1375esndlb_" class="data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-…>…</button>[22m
+    [2m  - attempting click action[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is not visible[22m
+    [2m    - retrying click action[22m
+    [2m    - waiting 20ms[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is not visible[22m
+    [2m    - retrying click action[22m
+    [2m      - waiting 100ms[22m
+    [2m    15 × waiting for element to be visible, enabled and stable[22m
+    [2m       - element is not visible[22m
+    [2m     - retrying click action[22m
+    [2m       - waiting 500ms[22m
+
+
+      224 |     }
+      225 |
+    > 226 |     await page.locator('button:has-text("Select your branch")').click();
+          |                                                                 ^
+      227 |     await page.locator('text=CSE').first().click();
+      228 |     await page.locator('button:has-text("Select your year")').click();
+      229 |     await page.locator('text=1st Year').click();
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:226:65
+
+    Error Context: test-results/auth-Registration-Flow---E-88e5c-uccessful-Step-3-submission-webkit/error-context.md
+
+
+[1A[2K[58/90] [Mobile Chrome] › tests/auth.spec.ts:79:7 › Registration Flow - Email/Password › should validate all required fields on Step 2
+[1A[2K[59/90] [Mobile Chrome] › tests/auth.spec.ts:97:7 › Registration Flow - Email/Password › should validate name length on Step 2
+[1A[2K[60/90] [Mobile Chrome] › tests/auth.spec.ts:118:7 › Registration Flow - Email/Password › should advance to Step 3 after valid profile
+[1A[2K[61/90] [Mobile Chrome] › tests/auth.spec.ts:63:7 › Registration Flow - Email/Password › should advance to Step 2 after valid email/password
+[1A[2K[62/90] [Mobile Chrome] › tests/auth.spec.ts:160:7 › Registration Flow - Email/Password › should validate minimum 3 interests on Step 3
+[1A[2K[63/90] [Mobile Chrome] › tests/auth.spec.ts:205:7 › Registration Flow - Email/Password › should call RPC on successful Step 3 submission
+[1A[2K[64/90] [Mobile Chrome] › tests/auth.spec.ts:268:7 › Sign-in Flow › should validate email on sign-in
+[1A[2K  19) [webkit] › tests/auth.spec.ts:118:7 › Registration Flow - Email/Password › should advance to Step 3 after valid profile 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('button:has-text("Select your branch")')[22m
+    [2m    - locator resolved to <button dir="ltr" type="button" role="combobox" data-state="closed" data-placeholder="" data-size="default" aria-expanded="false" aria-autocomplete="none" data-slot="select-trigger" aria-controls="radix-_R_1375esndlb_" class="data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-…>…</button>[22m
+    [2m  - attempting click action[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is not visible[22m
+    [2m    - retrying click action[22m
+    [2m    - waiting 20ms[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is not visible[22m
+    [2m    - retrying click action[22m
+    [2m      - waiting 100ms[22m
+    [2m    53 × waiting for element to be visible, enabled and stable[22m
+    [2m       - element is not visible[22m
+    [2m     - retrying click action[22m
+    [2m       - waiting 500ms[22m
+
+
+      133 |
+      134 |     // Select branch (first dropdown on this form)
+    > 135 |     await page.locator('button:has-text("Select your branch")').click();
+          |                                                                 ^
+      136 |     await page.locator('text=CSE').first().click();
+      137 |
+      138 |     // Select year
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:135:65
+
+    Error Context: test-results/auth-Registration-Flow---E-16503--Step-3-after-valid-profile-webkit/error-context.md
+
+
+[1A[2K[65/90] [Mobile Chrome] › tests/auth.spec.ts:300:7 › Sign-in Flow › should navigate to dashboard on successful login
+[1A[2K[66/90] [Mobile Chrome] › tests/auth.spec.ts:312:7 › Sign-in Flow › should show OAuth buttons
+[1A[2K[67/90] [Mobile Chrome] › tests/auth.spec.ts:325:7 › Dashboard Auth Guard › should redirect to sign-in when not authenticated
+[1A[2K[68/90] [Mobile Chrome] › tests/auth.spec.ts:334:7 › Dashboard Auth Guard › should show loading state while checking auth
+[1A[2K[69/90] [Mobile Chrome] › tests/auth.spec.ts:281:7 › Sign-in Flow › should display error for non-existent profile
+[1A[2K[70/90] [Mobile Chrome] › tests/auth.spec.ts:350:7 › Navigation and CTAs › CTA section should prefill email on get-started
+[1A[2K  20) [Mobile Chrome] › tests/auth.spec.ts:350:7 › Navigation and CTAs › CTA section should prefill email on get-started 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+    Expected: [32m"test@nitkkr.ac.in"[39m
+    Received: [31m""[39m
+
+      357 |     const emailInput = page.locator('input[placeholder="name.roll@nitkkr.ac.in"]');
+      358 |     const value = await emailInput.inputValue();
+    > 359 |     expect(value).toBe(testEmail);
+          |                   ^
+      360 |   });
+      361 |
+      362 |   test('sign-in page should have link to get-started', async ({ page }) => {
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:359:19
+
+    Error Context: test-results/auth-Navigation-and-CTAs-C-c7016-refill-email-on-get-started-Mobile-Chrome/error-context.md
+
+
+[1A[2K[71/90] [Mobile Chrome] › tests/auth.spec.ts:362:7 › Navigation and CTAs › sign-in page should have link to get-started
+[1A[2K[72/90] [Mobile Chrome] › tests/auth.spec.ts:371:7 › Navigation and CTAs › get-started page should have link to sign-in
+[1A[2K  21) [Mobile Chrome] › tests/auth.spec.ts:362:7 › Navigation and CTAs › sign-in page should have link to get-started 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeTruthy[2m()[22m
+
+    Received: [31mfalse[39m
+
+      366 |     const isVisible = await link.isVisible().catch(() => false);
+      367 |
+    > 368 |     expect(isVisible).toBeTruthy();
+          |                       ^
+      369 |   });
+      370 |
+      371 |   test('get-started page should have link to sign-in', async ({ page }) => {
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:368:23
+
+    Error Context: test-results/auth-Navigation-and-CTAs-s-c1717-ld-have-link-to-get-started-Mobile-Chrome/error-context.md
+
+
+[1A[2K[73/90] [Mobile Safari] › tests/auth.spec.ts:15:7 › Registration Flow - Email/Password › should validate email domain on Step 1
+[1A[2K[74/90] [Mobile Safari] › tests/auth.spec.ts:31:7 › Registration Flow - Email/Password › should validate password strength on Step 1
+[1A[2K  22) [Mobile Chrome] › tests/auth.spec.ts:205:7 › Registration Flow - Email/Password › should call RPC on successful Step 3 submission 
+
+    TimeoutError: page.waitForResponse: Timeout 10000ms exceeded while waiting for event "response"
+
+      207 |
+      208 |     // Intercept RPC call
+    > 209 |     const rpcPromise = page.waitForResponse(
+          |                             ^
+      210 |       response => response.url().includes('/rpc/') || response.url().includes('create_student_profile'),
+      211 |       { timeout: 10000 }
+      212 |     );
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:209:29
+
+    Error: locator.click: Test ended.
+    Call log:
+    [2m  - waiting for locator('button:has-text("Select your branch")')[22m
+    [2m    - locator resolved to <button dir="ltr" type="button" role="combobox" data-state="closed" data-placeholder="" data-size="default" aria-expanded="false" aria-autocomplete="none" data-slot="select-trigger" aria-controls="radix-_R_1375esndlb_" class="data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-…>…</button>[22m
+    [2m  - attempting click action[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is not visible[22m
+    [2m    - retrying click action[22m
+    [2m    - waiting 20ms[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is not visible[22m
+    [2m    - retrying click action[22m
+    [2m      - waiting 100ms[22m
+    [2m    17 × waiting for element to be visible, enabled and stable[22m
+    [2m       - element is not visible[22m
+    [2m     - retrying click action[22m
+    [2m       - waiting 500ms[22m
+
+
+      224 |     }
+      225 |
+    > 226 |     await page.locator('button:has-text("Select your branch")').click();
+          |                                                                 ^
+      227 |     await page.locator('text=CSE').first().click();
+      228 |     await page.locator('button:has-text("Select your year")').click();
+      229 |     await page.locator('text=1st Year').click();
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:226:65
+
+    Error Context: test-results/auth-Registration-Flow---E-88e5c-uccessful-Step-3-submission-Mobile-Chrome/error-context.md
+
+
+[1A[2K  23) [webkit] › tests/auth.spec.ts:160:7 › Registration Flow - Email/Password › should validate minimum 3 interests on Step 3 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('text=CSE').first()[22m
+    [2m    - locator resolved to <div class="flex flex-wrap gap-2">…</div>[22m
+    [2m  - attempting click action[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is not visible[22m
+    [2m    - retrying click action[22m
+    [2m    - waiting 20ms[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is not visible[22m
+    [2m    - retrying click action[22m
+    [2m      - waiting 100ms[22m
+    [2m    45 × waiting for element to be visible, enabled and stable[22m
+    [2m       - element is not visible[22m
+    [2m     - retrying click action[22m
+    [2m       - waiting 500ms[22m
+
+
+      174 |
+      175 |     await page.locator('button:has-text("Select your branch")').click();
+    > 176 |     await page.locator('text=CSE').first().click();
+          |                                            ^
+      177 |     await page.locator('button:has-text("Select your year")').click();
+      178 |     await page.locator('text=1st Year').click();
+      179 |     await page.locator('button:has-text("Select your hostel")').click();
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:176:44
+
+    Error Context: test-results/auth-Registration-Flow---E-f6bb4-nimum-3-interests-on-Step-3-webkit/error-context.md
+
+
+[1A[2K[75/90] [Mobile Safari] › tests/auth.spec.ts:79:7 › Registration Flow - Email/Password › should validate all required fields on Step 2
+[1A[2K[76/90] [Mobile Safari] › tests/auth.spec.ts:47:7 › Registration Flow - Email/Password › should validate password match on Step 1
+[1A[2K[77/90] [Mobile Safari] › tests/auth.spec.ts:63:7 › Registration Flow - Email/Password › should advance to Step 2 after valid email/password
+[1A[2K  24) [Mobile Safari] › tests/auth.spec.ts:31:7 › Registration Flow - Email/Password › should validate password strength on Step 1 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('text=Password must be at least 8 characters')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('text=Password must be at least 8 characters')[22m
+
+
+      42 |     // Should show error
+      43 |     const error = page.locator('text=Password must be at least 8 characters');
+    > 44 |     await expect(error).toBeVisible();
+         |                         ^
+      45 |   });
+      46 |
+      47 |   test('should validate password match on Step 1', async ({ page }) => {
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:44:25
+
+    Error Context: test-results/auth-Registration-Flow---E-1d242-password-strength-on-Step-1-Mobile-Safari/error-context.md
+
+
+[1A[2K[78/90] [Mobile Safari] › tests/auth.spec.ts:118:7 › Registration Flow - Email/Password › should advance to Step 3 after valid profile
+[1A[2K  25) [Mobile Safari] › tests/auth.spec.ts:79:7 › Registration Flow - Email/Password › should validate all required fields on Step 2 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('text=Full name is required')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('text=Full name is required')[22m
+
+
+      92 |     // Should show error about name
+      93 |     const error = page.locator('text=Full name is required');
+    > 94 |     await expect(error).toBeVisible();
+         |                         ^
+      95 |   });
+      96 |
+      97 |   test('should validate name length on Step 2', async ({ page }) => {
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:94:25
+
+    Error Context: test-results/auth-Registration-Flow---E-85367-l-required-fields-on-Step-2-Mobile-Safari/error-context.md
+
+
+[1A[2K[79/90] [Mobile Safari] › tests/auth.spec.ts:97:7 › Registration Flow - Email/Password › should validate name length on Step 2
+[1A[2K  26) [Mobile Safari] › tests/auth.spec.ts:47:7 › Registration Flow - Email/Password › should validate password match on Step 1 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('text=Passwords do not match')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('text=Passwords do not match')[22m
+
+
+      58 |     // Should show error
+      59 |     const error = page.locator('text=Passwords do not match');
+    > 60 |     await expect(error).toBeVisible();
+         |                         ^
+      61 |   });
+      62 |
+      63 |   test('should advance to Step 2 after valid email/password', async ({ page }) => {
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:60:25
+
+    Error Context: test-results/auth-Registration-Flow---E-883c1-te-password-match-on-Step-1-Mobile-Safari/error-context.md
+
+
+[1A[2K[80/90] [Mobile Safari] › tests/auth.spec.ts:160:7 › Registration Flow - Email/Password › should validate minimum 3 interests on Step 3
+[1A[2K[81/90] [Mobile Safari] › tests/auth.spec.ts:205:7 › Registration Flow - Email/Password › should call RPC on successful Step 3 submission
+[1A[2K  27) [Mobile Chrome] › tests/auth.spec.ts:118:7 › Registration Flow - Email/Password › should advance to Step 3 after valid profile 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('text=CSE').first()[22m
+    [2m    - locator resolved to <div class="flex flex-wrap gap-2">…</div>[22m
+    [2m  - attempting click action[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is not visible[22m
+    [2m    - retrying click action[22m
+    [2m    - waiting 20ms[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is not visible[22m
+    [2m    - retrying click action[22m
+    [2m      - waiting 100ms[22m
+    [2m    53 × waiting for element to be visible, enabled and stable[22m
+    [2m       - element is not visible[22m
+    [2m     - retrying click action[22m
+    [2m       - waiting 500ms[22m
+
+
+      134 |     // Select branch (first dropdown on this form)
+      135 |     await page.locator('button:has-text("Select your branch")').click();
+    > 136 |     await page.locator('text=CSE').first().click();
+          |                                            ^
+      137 |
+      138 |     // Select year
+      139 |     await page.locator('button:has-text("Select your year")').click();
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:136:44
+
+    Error Context: test-results/auth-Registration-Flow---E-16503--Step-3-after-valid-profile-Mobile-Chrome/error-context.md
+
+
+[1A[2K[82/90] [Mobile Safari] › tests/auth.spec.ts:268:7 › Sign-in Flow › should validate email on sign-in
+[1A[2K  28) [Mobile Chrome] › tests/auth.spec.ts:160:7 › Registration Flow - Email/Password › should validate minimum 3 interests on Step 3 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('text=CSE').first()[22m
+    [2m    - locator resolved to <div class="flex flex-wrap gap-2">…</div>[22m
+    [2m  - attempting click action[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is not visible[22m
+    [2m    - retrying click action[22m
+    [2m    - waiting 20ms[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is not visible[22m
+    [2m    - retrying click action[22m
+    [2m      - waiting 100ms[22m
+    [2m    52 × waiting for element to be visible, enabled and stable[22m
+    [2m       - element is not visible[22m
+    [2m     - retrying click action[22m
+    [2m       - waiting 500ms[22m
+
+
+      174 |
+      175 |     await page.locator('button:has-text("Select your branch")').click();
+    > 176 |     await page.locator('text=CSE').first().click();
+          |                                            ^
+      177 |     await page.locator('button:has-text("Select your year")').click();
+      178 |     await page.locator('text=1st Year').click();
+      179 |     await page.locator('button:has-text("Select your hostel")').click();
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:176:44
+
+    Error Context: test-results/auth-Registration-Flow---E-f6bb4-nimum-3-interests-on-Step-3-Mobile-Chrome/error-context.md
+
+
+[1A[2K  29) [Mobile Safari] › tests/auth.spec.ts:97:7 › Registration Flow - Email/Password › should validate name length on Step 2 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeVisible[2m([22m[2m)[22m failed
+
+    Locator: locator('text=Name must be at least 3 characters')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+    [2m  - Expect "toBeVisible" with timeout 5000ms[22m
+    [2m  - waiting for locator('text=Name must be at least 3 characters')[22m
+
+
+      112 |
+      113 |       const error = page.locator('text=Name must be at least 3 characters');
+    > 114 |       await expect(error).toBeVisible();
+          |                           ^
+      115 |     }
+      116 |   });
+      117 |
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:114:27
+
+    Error Context: test-results/auth-Registration-Flow---E-9f76a-idate-name-length-on-Step-2-Mobile-Safari/error-context.md
+
+
+[1A[2K[83/90] [Mobile Safari] › tests/auth.spec.ts:312:7 › Sign-in Flow › should show OAuth buttons
+[1A[2K[84/90] [Mobile Safari] › tests/auth.spec.ts:281:7 › Sign-in Flow › should display error for non-existent profile
+[1A[2K[85/90] [Mobile Safari] › tests/auth.spec.ts:300:7 › Sign-in Flow › should navigate to dashboard on successful login
+[1A[2K[86/90] [Mobile Safari] › tests/auth.spec.ts:325:7 › Dashboard Auth Guard › should redirect to sign-in when not authenticated
+[1A[2K[87/90] [Mobile Safari] › tests/auth.spec.ts:334:7 › Dashboard Auth Guard › should show loading state while checking auth
+[1A[2K[88/90] [Mobile Safari] › tests/auth.spec.ts:350:7 › Navigation and CTAs › CTA section should prefill email on get-started
+[1A[2K[89/90] [Mobile Safari] › tests/auth.spec.ts:362:7 › Navigation and CTAs › sign-in page should have link to get-started
+[1A[2K  30) [Mobile Safari] › tests/auth.spec.ts:350:7 › Navigation and CTAs › CTA section should prefill email on get-started 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBe[2m([22m[32mexpected[39m[2m) // Object.is equality[22m
+
+    Expected: [32m"test@nitkkr.ac.in"[39m
+    Received: [31m""[39m
+
+      357 |     const emailInput = page.locator('input[placeholder="name.roll@nitkkr.ac.in"]');
+      358 |     const value = await emailInput.inputValue();
+    > 359 |     expect(value).toBe(testEmail);
+          |                   ^
+      360 |   });
+      361 |
+      362 |   test('sign-in page should have link to get-started', async ({ page }) => {
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:359:19
+
+    Error Context: test-results/auth-Navigation-and-CTAs-C-c7016-refill-email-on-get-started-Mobile-Safari/error-context.md
+
+
+[1A[2K  31) [Mobile Safari] › tests/auth.spec.ts:205:7 › Registration Flow - Email/Password › should call RPC on successful Step 3 submission 
+
+    TimeoutError: page.waitForResponse: Timeout 10000ms exceeded while waiting for event "response"
+
+      207 |
+      208 |     // Intercept RPC call
+    > 209 |     const rpcPromise = page.waitForResponse(
+          |                             ^
+      210 |       response => response.url().includes('/rpc/') || response.url().includes('create_student_profile'),
+      211 |       { timeout: 10000 }
+      212 |     );
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:209:29
+
+    Error: locator.click: Test ended.
+    Call log:
+    [2m  - waiting for locator('button:has-text("Select your branch")')[22m
+    [2m    - locator resolved to <button dir="ltr" type="button" role="combobox" data-state="closed" data-placeholder="" data-size="default" aria-expanded="false" aria-autocomplete="none" data-slot="select-trigger" aria-controls="radix-_R_1375esndlb_" class="data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-…>…</button>[22m
+    [2m  - attempting click action[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is not visible[22m
+    [2m    - retrying click action[22m
+    [2m    - waiting 20ms[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is not visible[22m
+    [2m    - retrying click action[22m
+    [2m      - waiting 100ms[22m
+    [2m    17 × waiting for element to be visible, enabled and stable[22m
+    [2m       - element is not visible[22m
+    [2m     - retrying click action[22m
+    [2m       - waiting 500ms[22m
+
+
+      224 |     }
+      225 |
+    > 226 |     await page.locator('button:has-text("Select your branch")').click();
+          |                                                                 ^
+      227 |     await page.locator('text=CSE').first().click();
+      228 |     await page.locator('button:has-text("Select your year")').click();
+      229 |     await page.locator('text=1st Year').click();
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:226:65
+
+    Error Context: test-results/auth-Registration-Flow---E-88e5c-uccessful-Step-3-submission-Mobile-Safari/error-context.md
+
+
+[1A[2K  32) [Mobile Safari] › tests/auth.spec.ts:362:7 › Navigation and CTAs › sign-in page should have link to get-started 
+
+    Error: [2mexpect([22m[31mreceived[39m[2m).[22mtoBeTruthy[2m()[22m
+
+    Received: [31mfalse[39m
+
+      366 |     const isVisible = await link.isVisible().catch(() => false);
+      367 |
+    > 368 |     expect(isVisible).toBeTruthy();
+          |                       ^
+      369 |   });
+      370 |
+      371 |   test('get-started page should have link to sign-in', async ({ page }) => {
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:368:23
+
+    Error Context: test-results/auth-Navigation-and-CTAs-s-c1717-ld-have-link-to-get-started-Mobile-Safari/error-context.md
+
+
+[1A[2K[90/90] [Mobile Safari] › tests/auth.spec.ts:371:7 › Navigation and CTAs › get-started page should have link to sign-in
+[1A[2K  33) [Mobile Safari] › tests/auth.spec.ts:118:7 › Registration Flow - Email/Password › should advance to Step 3 after valid profile 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('button:has-text("Select your branch")')[22m
+    [2m    - locator resolved to <button dir="ltr" type="button" role="combobox" data-state="closed" data-placeholder="" data-size="default" aria-expanded="false" aria-autocomplete="none" data-slot="select-trigger" aria-controls="radix-_R_1375esndlb_" class="data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-…>…</button>[22m
+    [2m  - attempting click action[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is not visible[22m
+    [2m    - retrying click action[22m
+    [2m    - waiting 20ms[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is not visible[22m
+    [2m    - retrying click action[22m
+    [2m      - waiting 100ms[22m
+    [2m    53 × waiting for element to be visible, enabled and stable[22m
+    [2m       - element is not visible[22m
+    [2m     - retrying click action[22m
+    [2m       - waiting 500ms[22m
+
+
+      133 |
+      134 |     // Select branch (first dropdown on this form)
+    > 135 |     await page.locator('button:has-text("Select your branch")').click();
+          |                                                                 ^
+      136 |     await page.locator('text=CSE').first().click();
+      137 |
+      138 |     // Select year
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:135:65
+
+    Error Context: test-results/auth-Registration-Flow---E-16503--Step-3-after-valid-profile-Mobile-Safari/error-context.md
+
+
+[1A[2K  34) [Mobile Safari] › tests/auth.spec.ts:160:7 › Registration Flow - Email/Password › should validate minimum 3 interests on Step 3 
+
+    [31mTest timeout of 30000ms exceeded.[39m
+
+    Error: locator.click: Test timeout of 30000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('button:has-text("Select your branch")')[22m
+    [2m    - locator resolved to <button dir="ltr" type="button" role="combobox" data-state="closed" data-placeholder="" data-size="default" aria-expanded="false" aria-autocomplete="none" data-slot="select-trigger" aria-controls="radix-_R_1375esndlb_" class="data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 dark:hover:bg-…>…</button>[22m
+    [2m  - attempting click action[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is not visible[22m
+    [2m    - retrying click action[22m
+    [2m    - waiting 20ms[22m
+    [2m    2 × waiting for element to be visible, enabled and stable[22m
+    [2m      - element is not visible[22m
+    [2m    - retrying click action[22m
+    [2m      - waiting 100ms[22m
+    [2m    52 × waiting for element to be visible, enabled and stable[22m
+    [2m       - element is not visible[22m
+    [2m     - retrying click action[22m
+    [2m       - waiting 500ms[22m
+
+
+      173 |     }
+      174 |
+    > 175 |     await page.locator('button:has-text("Select your branch")').click();
+          |                                                                 ^
+      176 |     await page.locator('text=CSE').first().click();
+      177 |     await page.locator('button:has-text("Select your year")').click();
+      178 |     await page.locator('text=1st Year').click();
+        at /Users/luckysoni/Downloads/b_9gYYYyZ4oNU-1772123144541/tests/auth.spec.ts:175:65
+
+    Error Context: test-results/auth-Registration-Flow---E-f6bb4-nimum-3-interests-on-Step-3-Mobile-Safari/error-context.md
+
+
+[1A[2K  34 failed
+    [chromium] › tests/auth.spec.ts:118:7 › Registration Flow - Email/Password › should advance to Step 3 after valid profile 
+    [chromium] › tests/auth.spec.ts:160:7 › Registration Flow - Email/Password › should validate minimum 3 interests on Step 3 
+    [chromium] › tests/auth.spec.ts:205:7 › Registration Flow - Email/Password › should call RPC on successful Step 3 submission 
+    [chromium] › tests/auth.spec.ts:350:7 › Navigation and CTAs › CTA section should prefill email on get-started 
+    [chromium] › tests/auth.spec.ts:362:7 › Navigation and CTAs › sign-in page should have link to get-started 
+    [firefox] › tests/auth.spec.ts:118:7 › Registration Flow - Email/Password › should advance to Step 3 after valid profile 
+    [firefox] › tests/auth.spec.ts:160:7 › Registration Flow - Email/Password › should validate minimum 3 interests on Step 3 
+    [firefox] › tests/auth.spec.ts:205:7 › Registration Flow - Email/Password › should call RPC on successful Step 3 submission 
+    [firefox] › tests/auth.spec.ts:350:7 › Navigation and CTAs › CTA section should prefill email on get-started 
+    [firefox] › tests/auth.spec.ts:362:7 › Navigation and CTAs › sign-in page should have link to get-started 
+    [webkit] › tests/auth.spec.ts:31:7 › Registration Flow - Email/Password › should validate password strength on Step 1 
+    [webkit] › tests/auth.spec.ts:47:7 › Registration Flow - Email/Password › should validate password match on Step 1 
+    [webkit] › tests/auth.spec.ts:63:7 › Registration Flow - Email/Password › should advance to Step 2 after valid email/password 
+    [webkit] › tests/auth.spec.ts:79:7 › Registration Flow - Email/Password › should validate all required fields on Step 2 
+    [webkit] › tests/auth.spec.ts:97:7 › Registration Flow - Email/Password › should validate name length on Step 2 
+    [webkit] › tests/auth.spec.ts:118:7 › Registration Flow - Email/Password › should advance to Step 3 after valid profile 
+    [webkit] › tests/auth.spec.ts:160:7 › Registration Flow - Email/Password › should validate minimum 3 interests on Step 3 
+    [webkit] › tests/auth.spec.ts:205:7 › Registration Flow - Email/Password › should call RPC on successful Step 3 submission 
+    [webkit] › tests/auth.spec.ts:350:7 › Navigation and CTAs › CTA section should prefill email on get-started 
+    [webkit] › tests/auth.spec.ts:362:7 › Navigation and CTAs › sign-in page should have link to get-started 
+    [Mobile Chrome] › tests/auth.spec.ts:118:7 › Registration Flow - Email/Password › should advance to Step 3 after valid profile 
+    [Mobile Chrome] › tests/auth.spec.ts:160:7 › Registration Flow - Email/Password › should validate minimum 3 interests on Step 3 
+    [Mobile Chrome] › tests/auth.spec.ts:205:7 › Registration Flow - Email/Password › should call RPC on successful Step 3 submission 
+    [Mobile Chrome] › tests/auth.spec.ts:350:7 › Navigation and CTAs › CTA section should prefill email on get-started 
+    [Mobile Chrome] › tests/auth.spec.ts:362:7 › Navigation and CTAs › sign-in page should have link to get-started 
+    [Mobile Safari] › tests/auth.spec.ts:31:7 › Registration Flow - Email/Password › should validate password strength on Step 1 
+    [Mobile Safari] › tests/auth.spec.ts:47:7 › Registration Flow - Email/Password › should validate password match on Step 1 
+    [Mobile Safari] › tests/auth.spec.ts:79:7 › Registration Flow - Email/Password › should validate all required fields on Step 2 
+    [Mobile Safari] › tests/auth.spec.ts:97:7 › Registration Flow - Email/Password › should validate name length on Step 2 
+    [Mobile Safari] › tests/auth.spec.ts:118:7 › Registration Flow - Email/Password › should advance to Step 3 after valid profile 
+    [Mobile Safari] › tests/auth.spec.ts:160:7 › Registration Flow - Email/Password › should validate minimum 3 interests on Step 3 
+    [Mobile Safari] › tests/auth.spec.ts:205:7 › Registration Flow - Email/Password › should call RPC on successful Step 3 submission 
+    [Mobile Safari] › tests/auth.spec.ts:350:7 › Navigation and CTAs › CTA section should prefill email on get-started 
+    [Mobile Safari] › tests/auth.spec.ts:362:7 › Navigation and CTAs › sign-in page should have link to get-started 
+  56 passed (2.5m)
+
+[36m  Serving HTML report at http://localhost:9323. Press Ctrl+C to quit.[39m

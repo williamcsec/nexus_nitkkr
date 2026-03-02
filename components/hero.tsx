@@ -94,11 +94,14 @@ export function Hero() {
 
         <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
           <Button
+            asChild
             size="lg"
             className="bg-primary text-primary-foreground hover:bg-primary/90 gap-2 px-8 text-base"
           >
-            Get Started
-            <ArrowRight className="h-4 w-4" />
+            <a href="/get-started" className="flex items-center gap-2">
+              Get Started
+              <ArrowRight className="h-4 w-4" />
+            </a>
           </Button>
           <Button
             variant="outline"

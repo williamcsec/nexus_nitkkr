@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Eye, EyeOff, Zap, Github, ArrowRight } from "lucide-react"
@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Separator } from "@/components/ui/separator"
 import { supabase } from "@/lib/supabaseClient"
-import { setCurrentStudentId } from "@/hooks/use-current-student"
+
 
 export default function SignInPage() {
   const router = useRouter()
@@ -21,6 +21,15 @@ export default function SignInPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
+  // redirect if already authenticated
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        router.push('/dashboard')
+      }
+    })
+  }, [router])
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
@@ -29,26 +38,52 @@ export default function SignInPage() {
     try {
       const trimmedEmail = email.trim().toLowerCase()
 
-      const { data, error: dbError } = await supabase
-        .from("students")
-        .select("id, email")
-        .eq("email", trimmedEmail)
+      const { data, error: authError } = await supabase.auth.signInWithPassword({
+        email: trimmedEmail,
+        password,
+      })
+
+      if (authError) {
+        throw authError
+      }
+
+      // check if profile exists and is complete
+      const userId = data.user?.id
+      const { data: profile, error: dbError } = await supabase
+        .from('students')
+        .select('id, branch')
+        .eq('auth_id', userId)
         .maybeSingle()
 
       if (dbError) {
         throw dbError
       }
 
-      if (!data) {
-        setError("No student found with this email. Please use Get Started to create your profile.")
+      // if no profile or incomplete profile, redirect to complete it
+      if (!profile || !profile.branch) {
+        router.push('/complete-profile')
         return
       }
 
-      setCurrentStudentId(data.id as string)
-      router.push("/dashboard")
+      // redirect on success
+      router.push('/dashboard')
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to sign in. Please try again.")
+      setError(err instanceof Error ? err.message : 'Failed to sign in. Please try again.')
     } finally {
+      setLoading(false)
+    }
+  }
+
+  // social OAuth handler
+  async function handleOAuth(provider: 'google' | 'github') {
+    setError(null)
+    setLoading(true)
+    const { error: oauthError } = await supabase.auth.signInWithOAuth({
+      provider,
+      options: { scopes: 'email' },
+    })
+    if (oauthError) {
+      setError(oauthError.message)
       setLoading(false)
     }
   }
@@ -169,9 +204,16 @@ export default function SignInPage() {
             </div>
 
             {error && (
-              <p className="text-sm text-destructive">
-                {error}
-              </p>
+              <div className="space-y-3 rounded-lg border border-destructive/30 bg-destructive/5 p-4">
+                <p className="text-sm text-destructive">
+                  {error}
+                </p>
+                {error.includes("Profile not found") && (
+                  <Link href="/get-started" className="text-sm font-medium text-primary hover:text-primary/80 transition-colors">
+                    Create a new account →
+                  </Link>
+                )}
+              </div>
             )}
 
             <Button
@@ -200,7 +242,11 @@ export default function SignInPage() {
           </div>
 
           <div className="flex gap-3">
-            <Button variant="outline" className="h-11 flex-1 gap-2 border-border bg-secondary/30 text-foreground hover:bg-secondary/60">
+            <Button
+              variant="outline"
+              onClick={() => handleOAuth('google')}
+              className="h-11 flex-1 gap-2 border-border bg-secondary/30 text-foreground hover:bg-secondary/60"
+            >
               <svg className="h-4 w-4" viewBox="0 0 24 24">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
                 <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
@@ -209,7 +255,11 @@ export default function SignInPage() {
               </svg>
               Google
             </Button>
-            <Button variant="outline" className="h-11 flex-1 gap-2 border-border bg-secondary/30 text-foreground hover:bg-secondary/60">
+            <Button
+              variant="outline"
+              onClick={() => handleOAuth('github')}
+              className="h-11 flex-1 gap-2 border-border bg-secondary/30 text-foreground hover:bg-secondary/60"
+            >
               <Github className="h-4 w-4" />
               GitHub
             </Button>

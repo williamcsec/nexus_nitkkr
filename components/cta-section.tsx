@@ -1,9 +1,30 @@
 "use client"
 
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { ArrowRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useLandingEmail } from "@/hooks/use-landing-email"
 
 export function CTASection() {
+  const [email, setEmailLocal] = useState("")
+  const [, setStoredEmail] = useLandingEmail()
+  const router = useRouter()
+
+  function handleJoin() {
+    const trimmed = email.trim()
+    if (trimmed) {
+      setStoredEmail(trimmed)
+      router.push(`/get-started?email=${encodeURIComponent(trimmed)}`)
+    }
+  }
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value
+    setEmailLocal(val)
+    setStoredEmail(val)
+  }
+
   return (
     <section className="relative px-6 py-24 md:py-32">
       <div className="mx-auto max-w-4xl">
@@ -27,11 +48,16 @@ export function CTASection() {
               <div className="flex w-full max-w-sm overflow-hidden rounded-lg border border-border bg-background/50 backdrop-blur-sm sm:flex-row">
                 <input
                   type="email"
+                  value={email}
+                  onChange={handleEmailChange}
                   placeholder="your.name@nitk.edu.in"
                   className="flex-1 bg-transparent px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none"
                   aria-label="Email address"
                 />
-                <Button className="rounded-none bg-primary text-primary-foreground hover:bg-primary/90 gap-1 px-6">
+                <Button
+                  onClick={handleJoin}
+                  className="rounded-none bg-primary text-primary-foreground hover:bg-primary/90 gap-1 px-6"
+                >
                   Join
                   <ArrowRight className="h-4 w-4" />
                 </Button>

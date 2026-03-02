@@ -12,7 +12,7 @@ export function Footer() {
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-8 md:grid-cols-4">
           <div>
-            <a href="#" className="flex items-center gap-2">
+            <a href="/" className="flex items-center gap-2">
               <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
                 <Zap className="h-4 w-4 text-primary-foreground" />
               </div>
@@ -25,25 +25,40 @@ export function Footer() {
             </p>
           </div>
 
-          {Object.entries(footerLinks).map(([category, links]) => (
-            <div key={category}>
-              <h3 className="mb-4 font-mono text-sm font-semibold text-foreground">
-                {category}
-              </h3>
-              <ul className="space-y-2">
-                {links.map((link) => (
-                  <li key={link}>
-                    <a
-                      href="#"
-                      className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-                    >
-                      {link}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
+          {Object.entries(footerLinks).map(([category, links]) => {
+            const getLinkHref = (category: string, link: string): string => {
+              if (category === "Platform") {
+                const platformMap: Record<string, string> = {
+                  "Features": "#features",
+                  "Events": "/events",
+                  "Clubs": "/clubs",
+                  "Certificates": "/dashboard",
+                  "N-Points": "/dashboard",
+                }
+                return platformMap[link] || "#"
+              }
+              return "#"
+            }
+            return (
+              <div key={category}>
+                <h3 className="mb-4 font-mono text-sm font-semibold text-foreground">
+                  {category}
+                </h3>
+                <ul className="space-y-2">
+                  {links.map((link) => (
+                    <li key={link}>
+                      <a
+                        href={getLinkHref(category, link)}
+                        className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                      >
+                        {link}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )
+          })}
         </div>
 
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 md:flex-row">

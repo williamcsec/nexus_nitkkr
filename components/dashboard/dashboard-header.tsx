@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { Zap, Bell, Search, LogOut } from "lucide-react"
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -8,24 +9,28 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { useCurrentStudent, clearCurrentStudentId } from "@/hooks/use-current-student"
+import { supabase } from "@/lib/supabaseClient"
 
 export function DashboardHeader() {
   const { student } = useCurrentStudent()
+  const router = useRouter()
 
   const points = student?.nPoints ?? 0
   const avatar = student?.avatar ?? "ST"
   const name = student?.name ?? "Student"
   const yearLabel = student?.year ? `${student.year} year` : "Student"
 
-  function handleSignOut() {
+  async function handleSignOut() {
     clearCurrentStudentId()
+    await supabase.auth.signOut()
+    router.push('/sign-in')
   }
 
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 lg:px-6">
         <div className="flex items-center gap-4">
-          <Link href="/" className="flex items-center gap-2">
+          <Link href="/dashboard" className="flex items-center gap-2">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
               <Zap className="h-4 w-4 text-primary-foreground" />
             </div>
@@ -60,17 +65,15 @@ export function DashboardHeader() {
             <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-primary" />
           </Button>
 
-          <Link href="/sign-in" className="hidden sm:block">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-muted-foreground hover:text-foreground"
-              aria-label="Sign out"
-              onClick={handleSignOut}
-            >
-              <LogOut className="h-5 w-5" />
-            </Button>
-          </Link>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="hidden sm:flex text-muted-foreground hover:text-foreground"
+            aria-label="Sign out"
+            onClick={handleSignOut}
+          >
+            <LogOut className="h-5 w-5" />
+          </Button>
 
           <div className="flex items-center gap-2">
             <Avatar className="h-8 w-8 border border-border">

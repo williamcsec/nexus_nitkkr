@@ -4,15 +4,16 @@ import { useState } from "react"
 import { Sparkles } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { EventCard } from "@/components/event-card"
-import { events } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
+import { useSupabaseEvents } from "@/hooks/use-supabase-events"
 
 const filterChips = ["For You", "Trending", "This Week", "Free", "Hackathons", "Workshops"]
 
 export function DiscoverTab() {
+  const { events: liveEvents, loading, error } = useSupabaseEvents()
   const [activeFilter, setActiveFilter] = useState("For You")
 
-  const sortedEvents = [...events].sort((a, b) => (b.matchScore || 0) - (a.matchScore || 0))
+  const sortedEvents = [...liveEvents].sort((a, b) => (b.matchScore || 0) - (a.matchScore || 0))
 
   const filtered = activeFilter === "For You"
     ? sortedEvents
@@ -67,17 +68,27 @@ export function DiscoverTab() {
       </div>
 
       {/* Event grid */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {filtered.map((event) => (
-          <EventCard key={event.id} event={event} showMatch />
-        ))}
-      </div>
+      {loading && (
+        <p className="py-12 text-center text-muted-foreground">Loading events...</p>
+      )}
+      {error && (
+        <p className="py-12 text-center text-destructive">Failed to load events: {error}</p>
+      )}
+      {!loading && !error && (
+        <>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {filtered.map((event) => (
+              <EventCard key={event.id} event={event} showMatch />
+            ))}
+          </div>
 
-      {filtered.length === 0 && (
-        <div className="py-16 text-center text-muted-foreground">
-          <p className="text-lg font-medium">No events found</p>
-          <p className="text-sm">Try a different filter</p>
-        </div>
+          {filtered.length === 0 && (
+            <div className="py-16 text-center text-muted-foreground">
+              <p className="text-lg font-medium">No events found</p>
+              <p className="text-sm">Try a different filter</p>
+            </div>
+          )}
+        </>
       )}
     </div>
   )

@@ -5,27 +5,29 @@ import Link from "next/link"
 import { Search, ArrowLeft, Users, Sparkles } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { ClubCard } from "@/components/club-card"
-import { clubs } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
+import { useSupabaseClubs } from "@/hooks/use-supabase-clubs"
 
 const categories = ["All", "Technical", "Cultural", "Sports", "Social"]
 
 export default function ClubsPage() {
   const [search, setSearch] = useState("")
   const [activeCategory, setActiveCategory] = useState("All")
+  const { clubs, loading, error } = useSupabaseClubs()
 
-  const featured = clubs.filter((c) => c.featured)
+  // featured clubs - pick top 3 verified or by totalMembers
+  const featured = clubs
+    .sort((a, b) => b.totalMembers - a.totalMembers)
+    .slice(0, 3)
 
   const filtered = useMemo(() => {
     let result = [...clubs]
 
     if (search) {
       const q = search.toLowerCase()
-      result = result.filter(
-        (c) =>
-          c.name.toLowerCase().includes(q) ||
-          c.shortName.toLowerCase().includes(q) ||
-          c.description.toLowerCase().includes(q)
+      result = result.filter((c) =>
+        c.name.toLowerCase().includes(q) ||
+        c.description.toLowerCase().includes(q),
       )
     }
 
@@ -34,7 +36,7 @@ export default function ClubsPage() {
     }
 
     return result
-  }, [search, activeCategory])
+  }, [search, activeCategory, clubs])
 
   return (
     <div className="min-h-screen bg-background">
@@ -113,11 +115,19 @@ export default function ClubsPage() {
               {filtered.length} club{filtered.length !== 1 ? "s" : ""}
             </p>
           </div>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {filtered.map((club) => (
-              <ClubCard key={club.id} club={club} />
-            ))}
-          </div>
+          {loading && (
+            <p className="py-20 text-center text-muted-foreground">Loading clubs...</p>
+          )}
+          {error && (
+            <p className="py-20 text-center text-destructive">Failed to load clubs: {error}</p>
+          )}
+          {!loading && !error && (
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {filtered.map((club) => (
+                <ClubCard key={club.id} club={club} />
+              ))}
+            </div>
+          )}
         </div>
 
         {filtered.length === 0 && (

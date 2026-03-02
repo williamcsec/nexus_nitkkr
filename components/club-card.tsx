@@ -3,7 +3,7 @@
 import { Users, Calendar } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import type { Club } from "@/lib/mock-data"
+import type { Club } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 type ClubCardProps = {

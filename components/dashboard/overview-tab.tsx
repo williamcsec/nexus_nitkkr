@@ -1,19 +1,18 @@
 "use client"
 
+import { useMemo } from "react"
 import { Calendar, Award, Zap, TrendingUp, QrCode, Clock, ArrowRight } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { EventCard } from "@/components/event-card"
-import { studentProfile, events, registrations } from "@/lib/mock-data"
-
-const statCards = [
-  { label: "Events Attended", value: studentProfile.eventsAttended, icon: Calendar, color: "text-blue-400", bg: "bg-blue-400/10" },
-  { label: "Upcoming Events", value: studentProfile.upcomingEvents, icon: Clock, color: "text-emerald-400", bg: "bg-emerald-400/10" },
-  { label: "Certificates", value: studentProfile.certificatesCount, icon: Award, color: "text-amber-400", bg: "bg-amber-400/10" },
-  { label: "N-Points", value: studentProfile.nPoints, icon: Zap, color: "text-primary", bg: "bg-primary/10" },
-]
+import { useCurrentStudent } from "@/hooks/use-current-student"
+import { useSupabasePoints } from "@/hooks/use-supabase-points"
+import { useSupabaseRegistrations } from "@/hooks/use-supabase-registrations"
+import { useSupabaseCertificates } from "@/hooks/use-supabase-certificates"
+import { useSupabaseEvents } from "@/hooks/use-supabase-events"
+import { useSupabaseLeaderboard } from "@/hooks/use-supabase-leaderboard"
 
 const recentActivity = [
   { text: "Registered for HackNITK 2026", time: "2 hours ago", type: "registration" },
@@ -24,8 +23,62 @@ const recentActivity = [
 ]
 
 export function OverviewTab() {
-  const upcomingRegs = registrations.filter((r) => r.status === "upcoming")
-  const recommended = events.filter((e) => e.matchScore && e.matchScore >= 80).slice(0, 4)
+  const { student, loading: studentLoading } = useCurrentStudent()
+  const studentId = student?.id ?? null
+
+  const { balance, transactions: pointsTransactions } = useSupabasePoints(studentId)
+  const { registrations, loading: regsLoading, error: regsError } = useSupabaseRegistrations(studentId)
+  const { certificates, loading: certsLoading } = useSupabaseCertificates(studentId)
+  const { events, loading: eventsLoading } = useSupabaseEvents()
+  const { entries: boardEntries } = useSupabaseLeaderboard(100)
+
+  const rank = useMemo(() => {
+    if (!studentId || boardEntries.length === 0) return undefined
+    const idx = boardEntries.findIndex((e) => e.id === studentId)
+    return idx >= 0 ? idx + 1 : undefined
+  }, [boardEntries, studentId])
+
+  const upcomingRegs = useMemo(() => {
+    return registrations.filter((r) => r.status === "upcoming")
+  }, [registrations])
+
+  const recommended = useMemo(() => {
+    return events.filter((e) => e.matchScore && e.matchScore >= 80).slice(0, 4)
+  }, [events])
+
+  const statCards = useMemo(() => [
+    { label: "Events Attended", value: registrations.filter((r) => r.status === "attended").length, icon: Calendar, color: "text-blue-400", bg: "bg-blue-400/10" },
+    { label: "Upcoming Events", value: upcomingRegs.length, icon: Clock, color: "text-emerald-400", bg: "bg-emerald-400/10" },
+    { label: "Certificates", value: certificates.length, icon: Award, color: "text-amber-400", bg: "bg-amber-400/10" },
+    { label: "N-Points", value: balance, icon: Zap, color: "text-primary", bg: "bg-primary/10" },
+  ], [registrations, upcomingRegs, certificates, balance])
+
+  const recentActivity = useMemo(() => {
+    const activities = []
+    if (pointsTransactions.length > 0) {
+      activities.push({
+        text: `Earned ${Math.abs(pointsTransactions[0].points)} N-Points from ${pointsTransactions[0].description}`,
+        time: new Date(pointsTransactions[0].createdAt).toLocaleDateString(),
+        type: "points"
+      })
+    }
+    if (certificates.length > 0) {
+      activities.push({
+        text: `Certificate: ${certificates[0].title}`,
+        time: new Date(certificates[0].date).toLocaleDateString(),
+        type: "certificate"
+      })
+    }
+    if (upcomingRegs.length > 0) {
+      activities.push({
+        text: `Registered for ${upcomingRegs[0].eventTitle}`,
+        time: "Recently",
+        type: "registration"
+      })
+    }
+    return activities
+  }, [pointsTransactions, certificates, upcomingRegs])
+
   const now = new Date()
   const hours = now.getHours()
   const greeting = hours < 12 ? "Good morning" : hours < 17 ? "Good afternoon" : "Good evening"
@@ -37,15 +90,17 @@ export function OverviewTab() {
         <CardContent className="flex flex-col gap-2 p-6 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h2 className="font-mono text-2xl font-bold text-foreground">
-              {greeting}, {studentProfile.name.split(" ")[0]}!
+              {greeting}, {student?.name?.split(" ")[0] || "User"}!
             </h2>
             <p className="text-sm text-muted-foreground">
-              You have {studentProfile.upcomingEvents} upcoming events this week. Keep up the great work!
+              You have {upcomingRegs.length} upcoming events. Keep up the great work!
             </p>
           </div>
-          <Badge className="w-fit bg-primary/20 text-primary border-primary/30 gap-1 text-sm font-mono">
-            <TrendingUp className="h-3.5 w-3.5" /> Rank #{studentProfile.rank}
-          </Badge>
+          {rank && (
+            <Badge className="w-fit bg-primary/20 text-primary border-primary/30 gap-1 text-sm font-mono">
+              <TrendingUp className="h-3.5 w-3.5" /> Rank #{rank}
+            </Badge>
+          )}
         </CardContent>
       </Card>
 

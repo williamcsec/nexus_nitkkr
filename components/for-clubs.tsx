@@ -120,9 +120,11 @@ export function ForClubs() {
               })}
             </div>
 
-            <Button className="bg-primary text-primary-foreground hover:bg-primary/90 gap-2">
-              Register Your Club
-              <ArrowRight className="h-4 w-4" />
+            <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90 gap-2">
+              <a href="/get-started" className="flex items-center gap-2">
+                Register Your Club
+                <ArrowRight className="h-4 w-4" />
+              </a>
             </Button>
           </div>
         </div>

@@ -682,14 +682,7 @@ export const interestOptions = [
 ]
 
 export const branches = [
-  "Computer Science & Engineering",
-  "Electronics & Communication Engineering",
-  "Electrical Engineering",
-  "Mechanical Engineering",
-  "Civil Engineering",
-  "Information Technology",
-  "Production & Industrial Engineering",
-  "Biotechnology",
+  "CSE", "ECE", "EE", "ME", "CE", "IT", "PIE", "CHE", "BT", "MME",
 ]
 
 export const hostels = [

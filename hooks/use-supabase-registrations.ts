@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 
 import { supabase } from '@/lib/supabaseClient'
-import type { Registration } from '@/lib/mock-data'
+import type { Registration } from '@/lib/types'
 
 type UseSupabaseRegistrationsResult = {
   registrations: Registration[]
@@ -41,6 +41,30 @@ export function useSupabaseRegistrations(studentId: string | null): UseSupabaseR
         }
 
         const rows = (data ?? []) as any[]
+        const eventIds = rows.map((r) => r.event_id).filter(Boolean)
+
+        // fetch event titles and club ids
+        const { data: eventsData } = await supabase
+          .from('events')
+          .select('id, title, club_id')
+          .in('id', eventIds)
+
+        const eventMap = new Map<string, { title: string; club_id: string }>()
+        ;(eventsData ?? []).forEach((e: any) => {
+          eventMap.set(e.id as string, { title: e.title as string, club_id: e.club_id as string })
+        })
+
+        // gather club ids
+        const clubIds = Array.from(new Set((eventsData ?? []).map((e: any) => e.club_id).filter(Boolean)))
+        const { data: clubsData } = await supabase
+          .from('clubs')
+          .select('id, name')
+          .in('id', clubIds)
+
+        const clubMap = new Map<string, string>()
+        ;(clubsData ?? []).forEach((c: any) => {
+          clubMap.set(c.id as string, c.name as string)
+        })
 
         const normalized: Registration[] = rows.map((row) => {
           const regDate = row.registered_at ? new Date(row.registered_at as string) : null
@@ -57,11 +81,14 @@ export function useSupabaseRegistrations(studentId: string | null): UseSupabaseR
             status = 'missed'
           }
 
+          const ev = eventMap.get(row.event_id as string)
+          const clubName = ev ? clubMap.get(ev.club_id) ?? '' : ''
+
           return {
             id: row.id as string,
             eventId: row.event_id as string,
-            eventTitle: 'Event',
-            clubName: '',
+            eventTitle: ev ? ev.title : 'Event',
+            clubName,
             date: regDate ? regDate.toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
             venue: '',
             status,

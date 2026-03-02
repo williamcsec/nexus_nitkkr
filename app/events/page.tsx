@@ -11,7 +11,6 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { EventCard } from "@/components/event-card"
-import { events as mockEvents, clubs as mockClubs } from "@/lib/mock-data"
 import { cn } from "@/lib/utils"
 import { useSupabaseEvents } from "@/hooks/use-supabase-events"
 
@@ -98,11 +97,8 @@ export default function EventsPage() {
   const [sortBy, setSortBy] = useState("date")
   const [view, setView] = useState<"grid" | "list">("grid")
 
-  const baseEvents = liveEvents.length > 0 ? liveEvents : mockEvents
-  const clubOptions: ClubOption[] =
-    liveClubs.length > 0
-      ? liveClubs
-      : mockClubs.map((c) => ({ id: c.id, name: c.name }))
+  const baseEvents = liveEvents // use whatever comes back (empty array possible)
+  const clubOptions: ClubOption[] = liveClubs.map((c) => ({ id: c.id, name: c.name }))
 
   function toggleType(type: string) {
     setSelectedTypes((prev) =>
@@ -296,7 +292,7 @@ export default function EventsPage() {
 
             {error && (
               <p className="mb-4 text-sm text-destructive">
-                Failed to load events from Supabase. Showing mock events instead. ({error})
+                Failed to load events from Supabase. ({error})
               </p>
             )}
 

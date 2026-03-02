@@ -4,7 +4,7 @@ import { Calendar, MapPin, Users, Zap, Clock } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
-import type { EventItem } from "@/lib/mock-data"
+import type { EventItem } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 type EventCardProps = {

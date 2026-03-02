@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 
 import { supabase } from '@/lib/supabaseClient'
-import type { EventItem } from '@/lib/mock-data'
+import type { EventItem } from '@/lib/types'
 
 type ClubOption = {
   id: string
@@ -40,6 +40,7 @@ export function useSupabaseEvents(): UseSupabaseEventsResult {
                 'id',
                 'title',
                 'club_id',
+                'event_type',
                 'start_time',
                 'venue',
                 'description',
@@ -48,6 +49,7 @@ export function useSupabaseEvents(): UseSupabaseEventsResult {
                 'n_points_reward',
                 'registration_fee',
                 'tags',
+                'status',
               ].join(', '),
             ),
           supabase.from('clubs').select('id, name'),
@@ -68,13 +70,13 @@ export function useSupabaseEvents(): UseSupabaseEventsResult {
           const dateStr = start ? start.toISOString().slice(0, 10) : ''
           const timeStr = start
             ? start.toLocaleTimeString(undefined, {
-                hour: 'numeric',
-                minute: '2-digit',
-              })
+              hour: 'numeric',
+              minute: '2-digit',
+            })
             : ''
 
           let status: EventItem['status'] = 'upcoming'
-          if (start && start < now) {
+          if (e.status === 'Completed' || (start && start < now)) {
             status = 'completed'
           }
 
@@ -85,8 +87,7 @@ export function useSupabaseEvents(): UseSupabaseEventsResult {
             title: e.title as string,
             clubId: (e.club_id as string) ?? '',
             clubName: clubLookup.get(e.club_id as string) ?? 'Club',
-            // You can refine this mapping later from events.event_type
-            type: 'Workshop',
+            type: (e.event_type as string) ?? 'Workshop',
             date: dateStr,
             time: timeStr,
             venue: (e.venue as string) ?? '',

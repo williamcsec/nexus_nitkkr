@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { Menu, X, Zap } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { GetStartedLink } from "@/components/GetStartedLink"
 
 const navLinks = [
   { label: "Features", href: "#features" },
@@ -30,7 +31,7 @@ export function Navbar() {
       }`}
     >
       <nav className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-        <a href="#" className="flex items-center gap-2">
+        <a href="/" className="flex items-center gap-2">
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
             <Zap className="h-5 w-5 text-primary-foreground" />
           </div>
@@ -52,11 +53,11 @@ export function Navbar() {
         </div>
 
         <div className="hidden items-center gap-3 md:flex">
-          <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
-            Sign In
+          <Button asChild variant="ghost" size="sm" className="text-muted-foreground hover:text-foreground">
+            <a href="/sign-in">Sign In</a>
           </Button>
-          <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
-            Get Started
+          <Button asChild size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
+            <GetStartedLink>Get Started</GetStartedLink>
           </Button>
         </div>
 
@@ -83,11 +84,11 @@ export function Navbar() {
               </a>
             ))}
             <div className="flex flex-col gap-2 pt-4 border-t border-border">
-              <Button variant="ghost" size="sm" className="justify-start text-muted-foreground">
-                Sign In
+              <Button asChild variant="ghost" size="sm" className="justify-start text-muted-foreground">
+                <a href="/sign-in">Sign In</a>
               </Button>
-              <Button size="sm" className="bg-primary text-primary-foreground">
-                Get Started
+              <Button asChild size="sm" className="bg-primary text-primary-foreground">
+                <GetStartedLink>Get Started</GetStartedLink>
               </Button>
             </div>
           </div>

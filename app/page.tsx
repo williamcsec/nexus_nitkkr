@@ -8,7 +8,6 @@ import { Testimonials } from "@/components/testimonials"
 import { ForClubs } from "@/components/for-clubs"
 import { CTASection } from "@/components/cta-section"
 import { Footer } from "@/components/footer"
-import { SupabaseStatus } from "@/components/supabase-status"
 
 export default function Home() {
   return (
@@ -22,9 +21,6 @@ export default function Home() {
       <Testimonials />
       <ForClubs />
       <CTASection />
-      <section className="flex justify-center px-4">
-        <SupabaseStatus />
-      </section>
       <Footer />
     </main>
   )
