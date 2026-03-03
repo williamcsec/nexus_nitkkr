@@ -1,6 +1,7 @@
 "use client"
 
-import { Calendar, MapPin, Users, Zap, Clock } from "lucide-react"
+import Link from "next/link"
+import { Calendar, MapPin, Users, Zap, Clock, TrendingUp, Sparkles } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
@@ -82,10 +83,28 @@ export function EventCard({ event, variant = "default", showMatch = false }: Eve
     )
   }
 
+  const Wrapper = event.slug ? Link : 'div' as any
+  const wrapperProps = event.slug ? { href: `/events/${event.slug}` } : {}
+
   return (
-    <div className="group flex flex-col overflow-hidden rounded-xl border border-border bg-card/50 transition-all duration-300 hover:border-primary/30 hover:bg-card hover:shadow-lg hover:shadow-primary/5">
-      <div className={cn("flex h-32 items-end bg-gradient-to-br p-4", getGradient(event.type))}>
-        <div className="flex w-full items-end justify-between">
+    <Wrapper {...wrapperProps} className="group flex flex-col overflow-hidden rounded-xl border border-border bg-card/50 transition-all duration-300 hover:border-primary/30 hover:bg-card hover:shadow-lg hover:shadow-primary/5">
+      <div className={cn("relative flex h-32 items-end bg-gradient-to-br p-4", getGradient(event.type))}>
+        {/* Status Badges */}
+        <div className="absolute top-4 right-4 flex flex-col items-end gap-2">
+          {fillPercent === 100 && (
+            <Badge className="bg-black/60 text-white border-white/10 backdrop-blur-md shadow-lg pointer-events-none">Sold Out</Badge>
+          )}
+          {fillPercent >= 85 && fillPercent < 100 && (
+            <Badge className="bg-red-500/80 text-white border-red-500/20 backdrop-blur-md shadow-lg pointer-events-none animate-pulse">Almost Full</Badge>
+          )}
+          {fillPercent >= 50 && fillPercent < 85 && (
+            <Badge className="bg-orange-500/80 text-white border-orange-500/20 backdrop-blur-md shadow-lg pointer-events-none flex items-center gap-1">
+              <TrendingUp className="h-3 w-3" /> Trending
+            </Badge>
+          )}
+        </div>
+
+        <div className="flex w-full items-end justify-between z-10">
           <Badge variant="outline" className="border-foreground/20 bg-background/20 text-foreground backdrop-blur-sm">
             {event.type}
           </Badge>
@@ -93,8 +112,8 @@ export function EventCard({ event, variant = "default", showMatch = false }: Eve
             <Badge className={cn(
               "text-xs backdrop-blur-sm",
               event.matchScore >= 90 ? "bg-emerald-500/80 text-foreground" :
-              event.matchScore >= 80 ? "bg-blue-500/80 text-foreground" :
-              "bg-muted/80 text-foreground"
+                event.matchScore >= 80 ? "bg-blue-500/80 text-foreground" :
+                  "bg-muted/80 text-foreground"
             )}>
               {event.matchScore}% Match
             </Badge>
@@ -105,6 +124,13 @@ export function EventCard({ event, variant = "default", showMatch = false }: Eve
       <div className="flex flex-1 flex-col p-4">
         <p className="text-xs font-medium text-primary">{event.clubName}</p>
         <h3 className="mt-1 line-clamp-2 font-semibold text-foreground">{event.title}</h3>
+
+        {showMatch && event.matchReason && (
+          <p className="mt-1.5 text-xs text-emerald-500 font-medium flex items-center gap-1">
+            <Sparkles className="h-3 w-3" />
+            {event.matchReason}
+          </p>
+        )}
 
         <div className="mt-3 flex flex-col gap-1.5 text-xs text-muted-foreground">
           <span className="flex items-center gap-1.5">
@@ -141,11 +167,11 @@ export function EventCard({ event, variant = "default", showMatch = false }: Eve
             ))}
           </div>
           <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
-            {event.isPaid ? `Rs. ${event.price}` : "Free"} 
+            {event.isPaid ? `Rs. ${event.price}` : "Free"}
           </Button>
         </div>
       </div>
-    </div>
+    </Wrapper>
   )
 }
 

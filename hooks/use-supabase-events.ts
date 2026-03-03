@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 
 import { supabase } from '@/lib/supabaseClient'
 import type { EventItem } from '@/lib/types'
+import { generateRecommendations } from '@/app/actions/generate-recommendations'
 
 type ClubOption = {
   id: string
@@ -38,6 +39,7 @@ export function useSupabaseEvents(): UseSupabaseEventsResult {
             .select(
               [
                 'id',
+                'slug',
                 'title',
                 'club_id',
                 'event_type',
@@ -57,6 +59,25 @@ export function useSupabaseEvents(): UseSupabaseEventsResult {
 
         if (eventsError) throw eventsError
         if (clubsError) throw clubsError
+
+        // Get the current user to fetch personalized AI recommendations
+        const { data: { session } } = await supabase.auth.getSession()
+        let personalizedScores = new Map<string, { score: number, reason: string }>()
+
+        if (session?.user?.id) {
+          // Trigger the recommendation engine (runs quickly in background/server)
+          await generateRecommendations(session.user.id)
+
+          // Fetch the calculated scores
+          const { data: recs } = await supabase
+            .from('ai_recommendations')
+            .select('event_id, score, reason')
+            .eq('user_id', session.user.id)
+
+          if (recs && recs.length > 0) {
+            recs.forEach(r => personalizedScores.set(r.event_id, { score: r.score, reason: r.reason }))
+          }
+        }
 
         const now = new Date()
 
@@ -84,6 +105,7 @@ export function useSupabaseEvents(): UseSupabaseEventsResult {
 
           return {
             id: e.id as string,
+            slug: (e.slug as string) ?? undefined,
             title: e.title as string,
             clubId: (e.club_id as string) ?? '',
             clubName: clubLookup.get(e.club_id as string) ?? 'Club',
@@ -99,7 +121,8 @@ export function useSupabaseEvents(): UseSupabaseEventsResult {
             price: (e.registration_fee as number | null) ?? undefined,
             tags: tagsArray,
             status,
-            matchScore: undefined,
+            matchScore: personalizedScores.get(e.id as string)?.score || undefined,
+            matchReason: personalizedScores.get(e.id as string)?.reason || undefined,
           }
         })
 

@@ -1,7 +1,7 @@
 import { Zap } from "lucide-react"
 
 const footerLinks = {
-  Platform: ["Features", "Events", "Clubs", "Certificates", "N-Points"],
+  Platform: ["Features", "Events", "Clubs", "About", "Certificates", "N-Points"],
   Resources: ["Help Center", "API Docs", "Blog", "Community"],
   Legal: ["Privacy Policy", "Terms of Service", "Cookie Policy"],
 }
@@ -32,6 +32,7 @@ export function Footer() {
                   "Features": "#features",
                   "Events": "/events",
                   "Clubs": "/clubs",
+                  "About": "/about",
                   "Certificates": "/dashboard",
                   "N-Points": "/dashboard",
                 }

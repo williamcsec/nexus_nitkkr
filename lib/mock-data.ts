@@ -686,7 +686,18 @@ export const branches = [
 ]
 
 export const hostels = [
-  "Aryabhatta Hostel", "Bhabha Hostel", "CV Raman Hostel",
-  "Kalpana Chawla Hostel", "Maitreyi Hostel", "Gargi Hostel",
-  "New Boys Hostel", "PG Hostel",
+  "Abhimanyu Bhawan (H-1)",
+  "Bhishma Bhawan (H-2)",
+  "Chakradhar Bhawan (H-3)",
+  "Dronacharya Bhawan (H-4)",
+  "Eklavya Bhawan (H-5)",
+  "Fanibhushan Bhawan (H-6)",
+  "Girivar Bhawan (H-7)",
+  "Harihar Bhawan (H-8)",
+  "Indivar Bhawan (H-9)",
+  "Visvesvaraya Bhawan (H-10)",
+  "Vivekananda Bhawan (H-11)",
+  "Bhagirathi Bhawan",
+  "Cauvery Bhawan",
+  "Kalpana Chawla Hostel",
 ]

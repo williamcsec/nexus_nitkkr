@@ -8,7 +8,7 @@ import { ClubCard } from "@/components/club-card"
 import { cn } from "@/lib/utils"
 import { useSupabaseClubs } from "@/hooks/use-supabase-clubs"
 
-const categories = ["All", "Technical", "Cultural", "Sports", "Social"]
+const categories = ["All", "Technical", "Cultural", "Sports", "Literary", "Social"]
 
 export default function ClubsPage() {
   const [search, setSearch] = useState("")

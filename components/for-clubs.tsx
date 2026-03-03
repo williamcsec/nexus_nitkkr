@@ -47,9 +47,8 @@ export function ForClubs() {
       <div className="mx-auto max-w-7xl">
         <div
           ref={ref}
-          className={`grid items-center gap-12 lg:grid-cols-2 lg:gap-20 transition-all duration-700 ${
-            visible ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"
-          }`}
+          className={`grid items-center gap-12 lg:grid-cols-2 lg:gap-20 transition-all duration-700 ${visible ? "translate-y-0 opacity-100" : "translate-y-12 opacity-0"
+            }`}
         >
           {/* Visual side */}
           <div className="relative">
@@ -121,8 +120,8 @@ export function ForClubs() {
             </div>
 
             <Button asChild className="bg-primary text-primary-foreground hover:bg-primary/90 gap-2">
-              <a href="/get-started" className="flex items-center gap-2">
-                Register Your Club
+              <a href="/club-login" className="flex items-center gap-2">
+                Access Club Portal
                 <ArrowRight className="h-4 w-4" />
               </a>
             </Button>

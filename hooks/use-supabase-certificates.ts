@@ -33,7 +33,7 @@ export function useSupabaseCertificates(studentId: string | null): UseSupabaseCe
       try {
         const { data, error: dbError } = await supabase
           .from('certificates')
-          .select('id, certificate_type, issued_at, is_verified, event_id')
+          .select('id, certificate_type, issued_at, is_verified, event_id, verification_code, pdf_url')
           .eq('student_id', studentId)
 
         if (dbError) {
@@ -52,9 +52,9 @@ export function useSupabaseCertificates(studentId: string | null): UseSupabaseCe
             .select('id, title, club_id')
             .in('id', eventIds)
 
-          ;(eventsData ?? []).forEach((e: any) => {
-            eventMap.set(e.id as string, { title: e.title as string, club_id: e.club_id as string })
-          })
+            ; (eventsData ?? []).forEach((e: any) => {
+              eventMap.set(e.id as string, { title: e.title as string, club_id: e.club_id as string })
+            })
 
           const clubIds = Array.from(new Set((eventsData ?? []).map((e: any) => e.club_id).filter(Boolean)))
           if (clubIds.length > 0) {
@@ -62,9 +62,9 @@ export function useSupabaseCertificates(studentId: string | null): UseSupabaseCe
               .from('clubs')
               .select('id, name')
               .in('id', clubIds)
-            ;(clubsData ?? []).forEach((c: any) => {
-              clubMap.set(c.id as string, c.name as string)
-            })
+              ; (clubsData ?? []).forEach((c: any) => {
+                clubMap.set(c.id as string, c.name as string)
+              })
           }
         }
 
@@ -82,6 +82,8 @@ export function useSupabaseCertificates(studentId: string | null): UseSupabaseCe
             type,
             date: issued.toISOString().slice(0, 10),
             verified: Boolean(row.is_verified),
+            hash: (row.verification_code as string) || 'PENDING',
+            url: (row.pdf_url as string) || '#',
           }
         })
 

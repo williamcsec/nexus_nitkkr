@@ -3,6 +3,7 @@
 export type Club = {
   id: string
   name: string
+  slug?: string
   description?: string
   category?: string
   image_url?: string
@@ -16,6 +17,7 @@ export type Club = {
 
 export type EventItem = {
   id: string
+  slug?: string
   title: string
   clubId: string
   clubName: string
@@ -32,17 +34,21 @@ export type EventItem = {
   tags: string[]
   status: 'upcoming' | 'live' | 'completed' | 'cancelled'
   matchScore?: number
+  matchReason?: string
 }
 
 export type Registration = {
   id: string
   eventId: string
   eventTitle: string
+  eventSlug?: string
   clubName: string
   date: string // YYYY-MM-DD
+  eventTime?: string // human-readable time
   venue: string
   status: 'upcoming' | 'attended' | 'missed' | 'cancelled'
   hasCertificate: boolean
+  qrCode?: string
 }
 
 export type Certificate = {
@@ -53,6 +59,8 @@ export type Certificate = {
   type: string
   date: string // YYYY-MM-DD
   verified: boolean
+  hash?: string
+  url?: string
 }
 
 // Additional types can be added as needed

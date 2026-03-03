@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { useCurrentStudent, clearCurrentStudentId } from "@/hooks/use-current-student"
 import { supabase } from "@/lib/supabaseClient"
+import { NotificationsPanel } from "./notifications-panel"
 
 export function DashboardHeader() {
   const { student } = useCurrentStudent()
@@ -55,15 +56,7 @@ export function DashboardHeader() {
             {points.toLocaleString()} pts
           </Badge>
 
-          <Button
-            variant="ghost"
-            size="icon"
-            className="relative text-muted-foreground hover:text-foreground"
-            aria-label="Notifications"
-          >
-            <Bell className="h-5 w-5" />
-            <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-primary" />
-          </Button>
+          <NotificationsPanel />
 
           <Button
             variant="ghost"

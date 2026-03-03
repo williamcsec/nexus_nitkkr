@@ -33,7 +33,7 @@ export function useSupabaseRegistrations(studentId: string | null): UseSupabaseR
       try {
         const { data, error: dbError } = await supabase
           .from('registrations')
-          .select('id, event_id, registration_status, attendance_status, registered_at')
+          .select('id, event_id, registration_status, attendance_status, registered_at, qr_code')
           .eq('student_id', studentId)
 
         if (dbError) {
@@ -46,13 +46,13 @@ export function useSupabaseRegistrations(studentId: string | null): UseSupabaseR
         // fetch event titles and club ids
         const { data: eventsData } = await supabase
           .from('events')
-          .select('id, title, club_id')
+          .select('id, title, slug, club_id, venue, start_time')
           .in('id', eventIds)
 
-        const eventMap = new Map<string, { title: string; club_id: string }>()
-        ;(eventsData ?? []).forEach((e: any) => {
-          eventMap.set(e.id as string, { title: e.title as string, club_id: e.club_id as string })
-        })
+        const eventMap = new Map<string, { title: string; slug: string; club_id: string; venue: string; start_time: string | null }>()
+          ; (eventsData ?? []).forEach((e: any) => {
+            eventMap.set(e.id as string, { title: e.title as string, slug: (e.slug as string) ?? '', club_id: e.club_id as string, venue: (e.venue as string) ?? '', start_time: (e.start_time as string | null) ?? null })
+          })
 
         // gather club ids
         const clubIds = Array.from(new Set((eventsData ?? []).map((e: any) => e.club_id).filter(Boolean)))
@@ -62,11 +62,13 @@ export function useSupabaseRegistrations(studentId: string | null): UseSupabaseR
           .in('id', clubIds)
 
         const clubMap = new Map<string, string>()
-        ;(clubsData ?? []).forEach((c: any) => {
-          clubMap.set(c.id as string, c.name as string)
-        })
+          ; (clubsData ?? []).forEach((c: any) => {
+            clubMap.set(c.id as string, c.name as string)
+          })
 
         const normalized: Registration[] = rows.map((row) => {
+          const ev = eventMap.get(row.event_id as string)
+          const eventStartTime = ev?.start_time ? new Date(ev.start_time) : null
           const regDate = row.registered_at ? new Date(row.registered_at as string) : null
 
           let status: Registration['status'] = 'upcoming'
@@ -77,22 +79,32 @@ export function useSupabaseRegistrations(studentId: string | null): UseSupabaseR
             status = 'cancelled'
           } else if (attendance.toLowerCase() === 'attended') {
             status = 'attended'
-          } else if (regDate && regDate < new Date()) {
+          } else if (eventStartTime && eventStartTime < new Date()) {
+            // Event has already started/passed but student didn't attend
             status = 'missed'
           }
+          // Otherwise stays 'upcoming'
 
-          const ev = eventMap.get(row.event_id as string)
           const clubName = ev ? clubMap.get(ev.club_id) ?? '' : ''
+          // Use event start time for display, fallback to registration date
+          const displayDate = eventStartTime ?? regDate ?? new Date()
+
+          const timeStr = eventStartTime
+            ? eventStartTime.toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })
+            : undefined
 
           return {
             id: row.id as string,
             eventId: row.event_id as string,
             eventTitle: ev ? ev.title : 'Event',
+            eventSlug: ev ? ev.slug : undefined,
             clubName,
-            date: regDate ? regDate.toISOString().slice(0, 10) : new Date().toISOString().slice(0, 10),
-            venue: '',
+            date: displayDate.toISOString().slice(0, 10),
+            eventTime: timeStr,
+            venue: ev ? ev.venue : '',
             status,
             hasCertificate: false,
+            qrCode: (row.qr_code as string | null) ?? undefined,
           }
         })
 

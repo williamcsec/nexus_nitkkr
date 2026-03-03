@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabaseClient'
 
 export type Club = {
   id: string
+  slug: string
   name: string
   category: string
   description: string
@@ -32,12 +33,13 @@ export function useSupabaseClubs(): UseSupabaseClubsResult {
       try {
         const { data, error: dbError } = await supabase
           .from('clubs')
-          .select('id, name, category, description, logo_url, total_members')
+          .select('id, slug, name, category, description, logo_url, total_members')
 
         if (dbError) throw dbError
         const rows = (data ?? []) as any[]
         const normalized: Club[] = rows.map((r) => ({
           id: r.id,
+          slug: r.slug || r.id,
           name: r.name,
           category: r.category || 'Other',
           description: r.description || '',

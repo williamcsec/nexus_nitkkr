@@ -4,23 +4,7 @@ import { useEffect, useRef } from "react"
 import { ArrowRight, Play } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
-function FloatingOrb({
-  className,
-  delay = 0,
-}: {
-  className?: string
-  delay?: number
-}) {
-  return (
-    <div
-      className={`absolute rounded-full opacity-20 blur-3xl ${className}`}
-      style={{
-        animation: `float ${6 + delay}s ease-in-out infinite`,
-        animationDelay: `${delay}s`,
-      }}
-    />
-  )
-}
+import { FloatingShapes } from "./floating-shapes"
 
 export function Hero() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -49,19 +33,8 @@ export function Hero() {
       ref={containerRef}
       className="relative flex min-h-screen items-center justify-center overflow-hidden px-6 pt-20"
     >
-      {/* Animated background orbs */}
-      <FloatingOrb
-        className="left-[10%] top-[20%] h-72 w-72 bg-primary"
-        delay={0}
-      />
-      <FloatingOrb
-        className="right-[15%] top-[30%] h-96 w-96 bg-accent"
-        delay={2}
-      />
-      <FloatingOrb
-        className="bottom-[20%] left-[30%] h-64 w-64 bg-chart-5"
-        delay={4}
-      />
+      {/* Animated 3D background shapes */}
+      <FloatingShapes />
 
       {/* Grid pattern overlay */}
       <div
