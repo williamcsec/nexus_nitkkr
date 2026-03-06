@@ -14,7 +14,7 @@ import { EventCard } from "@/components/event-card"
 import { cn } from "@/lib/utils"
 import { useSupabaseEvents } from "@/hooks/use-supabase-events"
 
-const quickFilters = ["All", "Today", "This Week", "Free", "Paid"]
+const quickFilters = ["All", "Today", "This Week", "Free", "Paid", "Expired"]
 const eventTypes = ["Workshop", "Hackathon", "Competition", "Seminar", "Cultural", "Sports", "Social"]
 
 type ClubOption = {
@@ -121,8 +121,27 @@ export default function EventsPage() {
     }
 
     // Quick filters
-    if (quickFilter === "Free") result = result.filter((e) => !e.isPaid)
-    if (quickFilter === "Paid") result = result.filter((e) => e.isPaid)
+    if (quickFilter === "Expired") {
+      result = result.filter((e) => e.isExpired)
+    } else {
+      result = result.filter((e) => !e.isExpired)
+
+      if (quickFilter === "Free") result = result.filter((e) => !e.isPaid)
+      if (quickFilter === "Paid") result = result.filter((e) => e.isPaid)
+      if (quickFilter === "Today") {
+        const todayStr = new Date().toISOString().slice(0, 10)
+        result = result.filter((e) => e.date === todayStr)
+      }
+      if (quickFilter === "This Week") {
+        const now = new Date()
+        now.setHours(0, 0, 0, 0)
+        const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000)
+        result = result.filter((e) => {
+          const d = new Date(e.date)
+          return d >= now && d <= nextWeek
+        })
+      }
+    }
 
     // Type filter
     if (selectedTypes.length > 0) {

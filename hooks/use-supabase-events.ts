@@ -50,6 +50,8 @@ export function useSupabaseEvents(): UseSupabaseEventsResult {
                 'max_participants',
                 'n_points_reward',
                 'registration_fee',
+                'registration_deadline',
+                'end_time',
                 'tags',
                 'status',
               ].join(', '),
@@ -101,6 +103,18 @@ export function useSupabaseEvents(): UseSupabaseEventsResult {
             status = 'completed'
           }
 
+          let isExpired = false
+          if (e.registration_deadline && new Date(e.registration_deadline as string) < now) {
+            isExpired = true
+          } else if (e.end_time && new Date(e.end_time as string) < now) {
+            isExpired = true
+          } else if (start && start < now) {
+            isExpired = true
+          }
+          if (status === 'completed' || e.status === 'Cancelled') {
+            isExpired = true
+          }
+
           const tagsArray: string[] = Array.isArray(e.tags) ? e.tags : []
 
           return {
@@ -123,6 +137,7 @@ export function useSupabaseEvents(): UseSupabaseEventsResult {
             status,
             matchScore: personalizedScores.get(e.id as string)?.score || undefined,
             matchReason: personalizedScores.get(e.id as string)?.reason || undefined,
+            isExpired,
           }
         })
 

@@ -73,8 +73,10 @@ export default async function ClubEventsPage() {
                                                 <Eye className="h-4 w-4 mr-1.5" /> View
                                             </Link>
                                         </Button>
-                                        <Button variant="outline" size="sm" className="flex-1 sm:flex-none">
-                                            <Edit className="h-4 w-4 mr-1.5" /> Edit
+                                        <Button variant="outline" size="sm" asChild className="flex-1 sm:flex-none">
+                                            <Link href={`/club-dashboard/events/edit/${event.id}`}>
+                                                <Edit className="h-4 w-4 mr-1.5" /> Edit
+                                            </Link>
                                         </Button>
                                     </div>
                                 </div>

@@ -59,6 +59,7 @@ export default function EventDetailPage() {
     const [successMsg, setSuccessMsg] = useState<string | null>(null)
     const [cancelling, setCancelling] = useState(false)
     const [userRole, setUserRole] = useState<{ role: 'student' | 'club' | 'admin' | 'none', id?: string }>({ role: 'none' })
+    const [accessToken, setAccessToken] = useState<string | null>(null)
     const [showRegistrations, setShowRegistrations] = useState(false)
     const [registrations, setRegistrations] = useState<any[]>([])
     const [loadingRegs, setLoadingRegs] = useState(false)
@@ -84,7 +85,29 @@ export default function EventDetailPage() {
             })
 
             // Check role
-            const session = await getUserRole()
+            let session = await getUserRole()
+
+            // Check student session directly from client side
+            const { data: authData } = await supabase.auth.getSession()
+            const token = authData.session?.access_token || null
+            if (token) {
+                setAccessToken(token)
+            }
+
+            if (session.role === 'none' && token) {
+                const { data: { user } } = await supabase.auth.getUser()
+                if (user) {
+                    const { data: student } = await supabase
+                        .from("students")
+                        .select("id")
+                        .eq("auth_id", user.id)
+                        .maybeSingle()
+                    if (student) {
+                        session = { role: 'student', id: student.id }
+                    }
+                }
+            }
+
             setUserRole(session as any)
 
             if (session.role === 'student' && session.id) {
@@ -132,7 +155,7 @@ export default function EventDetailPage() {
                 .eq("student_id", studentId)
         }
 
-        const result = await registerForEvent(event.id);
+        const result = await registerForEvent(event.id, accessToken || "");
 
         if (result.error) {
             setError(result.error);
@@ -181,7 +204,7 @@ export default function EventDetailPage() {
         setError(null)
         setSuccessMsg(null)
 
-        const result = await cancelRegistration(event.id);
+        const result = await cancelRegistration(event.id, accessToken || "");
 
         if (result.error) {
             setError("Failed to cancel: " + result.error)

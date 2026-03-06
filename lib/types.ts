@@ -35,6 +35,7 @@ export type EventItem = {
   status: 'upcoming' | 'live' | 'completed' | 'cancelled'
   matchScore?: number
   matchReason?: string
+  isExpired?: boolean
 }
 
 export type Registration = {

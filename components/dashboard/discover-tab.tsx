@@ -7,7 +7,7 @@ import { EventCard } from "@/components/event-card"
 import { cn } from "@/lib/utils"
 import { useSupabaseEvents } from "@/hooks/use-supabase-events"
 
-const filterChips = ["For You", "Trending", "This Week", "Free", "Hackathons", "Workshops"]
+const filterChips = ["For You", "Trending", "This Week", "Free", "Hackathons", "Workshops", "Expired"]
 
 export function DiscoverTab() {
   const { events: liveEvents, loading, error } = useSupabaseEvents()
@@ -15,24 +15,22 @@ export function DiscoverTab() {
 
   const sortedEvents = [...liveEvents].sort((a, b) => (b.matchScore || 0) - (a.matchScore || 0))
 
-  const filtered = activeFilter === "For You"
-    ? sortedEvents
-    : activeFilter === "Trending"
-    ? sortedEvents.filter((e) => e.registrations / e.maxCapacity > 0.7)
-    : activeFilter === "This Week"
-    ? sortedEvents.filter((e) => {
+  let filtered = activeFilter === "Expired"
+    ? sortedEvents.filter((e) => e.isExpired)
+    : sortedEvents.filter((e) => !e.isExpired).filter((e) => {
+      if (activeFilter === "For You") return true
+      if (activeFilter === "Trending") return e.maxCapacity > 0 && e.registrations / e.maxCapacity > 0.7
+      if (activeFilter === "This Week") {
         const d = new Date(e.date)
         const now = new Date()
         const weekEnd = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000)
         return d >= now && d <= weekEnd
-      })
-    : activeFilter === "Free"
-    ? sortedEvents.filter((e) => !e.isPaid)
-    : activeFilter === "Hackathons"
-    ? sortedEvents.filter((e) => e.type === "Hackathon")
-    : activeFilter === "Workshops"
-    ? sortedEvents.filter((e) => e.type === "Workshop")
-    : sortedEvents
+      }
+      if (activeFilter === "Free") return !e.isPaid
+      if (activeFilter === "Hackathons") return e.type === "Hackathon"
+      if (activeFilter === "Workshops") return e.type === "Workshop"
+      return true
+    })
 
   return (
     <div className="space-y-6">

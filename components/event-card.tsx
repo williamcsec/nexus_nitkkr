@@ -29,7 +29,7 @@ export function EventCard({ event, variant = "default", showMatch = false }: Eve
 
   if (variant === "compact") {
     return (
-      <div className="group flex items-center gap-4 rounded-xl border border-border bg-card/50 p-4 transition-all duration-200 hover:border-primary/30 hover:bg-card">
+      <div className={cn("group flex items-center gap-4 rounded-xl border border-border bg-card/50 p-4 transition-all duration-200 hover:border-primary/30 hover:bg-card", event.isExpired && "opacity-70 grayscale")}>
         <div className="flex h-12 w-12 flex-shrink-0 flex-col items-center justify-center rounded-lg bg-primary/10 text-primary">
           <span className="text-xs font-bold">{new Date(event.date).toLocaleDateString("en-US", { month: "short" })}</span>
           <span className="text-lg font-bold leading-none">{new Date(event.date).getDate()}</span>
@@ -47,7 +47,7 @@ export function EventCard({ event, variant = "default", showMatch = false }: Eve
 
   if (variant === "wide") {
     return (
-      <div className="group flex gap-4 rounded-xl border border-border bg-card/50 p-4 transition-all duration-200 hover:border-primary/30 hover:bg-card">
+      <div className={cn("group flex gap-4 rounded-xl border border-border bg-card/50 p-4 transition-all duration-200 hover:border-primary/30 hover:bg-card", event.isExpired && "opacity-70 grayscale")}>
         <div className="flex h-20 w-20 flex-shrink-0 flex-col items-center justify-center rounded-xl bg-primary/10 text-primary">
           <span className="text-xs font-bold">{new Date(event.date).toLocaleDateString("en-US", { month: "short" })}</span>
           <span className="text-2xl font-bold leading-none">{new Date(event.date).getDate()}</span>
@@ -75,8 +75,8 @@ export function EventCard({ event, variant = "default", showMatch = false }: Eve
           <Badge variant="outline" className={cn("text-xs", typeColorMap[event.type])}>
             {event.type}
           </Badge>
-          <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
-            Register
+          <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90" disabled={event.isExpired}>
+            {event.isExpired ? "Closed" : "Register"}
           </Button>
         </div>
       </div>
@@ -87,7 +87,7 @@ export function EventCard({ event, variant = "default", showMatch = false }: Eve
   const wrapperProps = event.slug ? { href: `/events/${event.slug}` } : {}
 
   return (
-    <Wrapper {...wrapperProps} className="group flex flex-col overflow-hidden rounded-xl border border-border bg-card/50 transition-all duration-300 hover:border-primary/30 hover:bg-card hover:shadow-lg hover:shadow-primary/5">
+    <Wrapper {...wrapperProps} className={cn("group flex flex-col overflow-hidden rounded-xl border border-border bg-card/50 transition-all duration-300 hover:border-primary/30 hover:bg-card hover:shadow-lg hover:shadow-primary/5", event.isExpired && "opacity-70 grayscale")}>
       <div className={cn("relative flex h-32 items-end bg-gradient-to-br p-4", getGradient(event.type))}>
         {/* Status Badges */}
         <div className="absolute top-4 right-4 flex flex-col items-end gap-2">
@@ -166,8 +166,8 @@ export function EventCard({ event, variant = "default", showMatch = false }: Eve
               </Badge>
             ))}
           </div>
-          <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90">
-            {event.isPaid ? `Rs. ${event.price}` : "Free"}
+          <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90" disabled={event.isExpired}>
+            {event.isExpired ? "Closed" : event.isPaid ? `Rs. ${event.price}` : "Free"}
           </Button>
         </div>
       </div>

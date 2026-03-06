@@ -11,6 +11,7 @@ import { DiscoverTab } from "@/components/dashboard/discover-tab"
 import { RegistrationsTab } from "@/components/dashboard/registrations-tab"
 import { CertificatesTab } from "@/components/dashboard/certificates-tab"
 import { WalletTab } from "@/components/dashboard/wallet-tab"
+import { ProfileTab } from "@/components/dashboard/profile-tab"
 
 const tabs = [
   { id: "overview", label: "Overview" },
@@ -18,13 +19,30 @@ const tabs = [
   { id: "registrations", label: "My Registrations" },
   { id: "certificates", label: "Certificates" },
   { id: "wallet", label: "Wallet" },
+  { id: "profile", label: "Profile" },
 ]
 
 export default function DashboardPage() {
   const router = useRouter()
   const { student, loading } = useCurrentStudent()
-  const [activeTab, setActiveTab] = useState("overview")
+
+  // Set initial tab from hash if available, otherwise "overview"
+  const [activeTab, setActiveTab] = useState(() => {
+    if (typeof window !== "undefined") {
+      const hash = window.location.hash.replace("#", "")
+      return tabs.some(t => t.id === hash) ? hash : "overview"
+    }
+    return "overview"
+  })
+
   const [checkingAuth, setCheckingAuth] = useState(true)
+
+  // Update hash when tab changes
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      window.location.hash = activeTab
+    }
+  }, [activeTab])
 
   // Check authentication and profile status
   useEffect(() => {
@@ -91,6 +109,7 @@ export default function DashboardPage() {
           {activeTab === "registrations" && <RegistrationsTab />}
           {activeTab === "certificates" && <CertificatesTab />}
           {activeTab === "wallet" && <WalletTab />}
+          {activeTab === "profile" && <ProfileTab />}
         </div>
       </div>
     </div>

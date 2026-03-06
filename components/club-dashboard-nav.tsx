@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LayoutDashboard, CalendarDays, Users, ScanLine, Award } from "lucide-react"
+import { LayoutDashboard, CalendarDays, Users, ScanLine, Award, UserCircle } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
@@ -34,6 +34,11 @@ export function ClubDashboardNav() {
             title: "Certificates",
             href: "/club-dashboard/certificates",
             icon: Award,
+        },
+        {
+            title: "Profile",
+            href: "/club-dashboard/profile",
+            icon: UserCircle,
         },
     ]
 

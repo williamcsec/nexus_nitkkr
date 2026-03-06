@@ -3,8 +3,8 @@
 import { supabase } from '@/lib/supabaseClient';
 import { revalidatePath } from 'next/cache';
 
-export async function registerForEvent(eventId: string) {
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+export async function registerForEvent(eventId: string, accessToken: string) {
+    const { data: { user }, error: authError } = await supabase.auth.getUser(accessToken);
 
     if (authError || !user) {
         return { error: 'You must be logged in to register' };
@@ -47,8 +47,8 @@ export async function registerForEvent(eventId: string) {
     };
 }
 
-export async function cancelRegistration(eventId: string) {
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+export async function cancelRegistration(eventId: string, accessToken: string) {
+    const { data: { user }, error: authError } = await supabase.auth.getUser(accessToken);
 
     if (authError || !user) {
         return { error: 'Unauthorized' };
