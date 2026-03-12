@@ -5,7 +5,9 @@ import { useRouter } from 'next/navigation';
 import { adminLogin } from './actions';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 
 export default function AdminLoginPage() {
     const [error, setError] = useState('');
@@ -75,6 +77,15 @@ export default function AdminLoginPage() {
                         </Button>
                     </form>
                 </CardContent>
+                <CardFooter className="flex justify-center border-t border-zinc-800 pt-6">
+                    <Link
+                        href="/"
+                        className="flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-300 transition-colors"
+                    >
+                        <ArrowLeft className="h-4 w-4" />
+                        Back to Website
+                    </Link>
+                </CardFooter>
             </Card>
         </div>
     );
