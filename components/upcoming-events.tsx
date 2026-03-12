@@ -52,7 +52,7 @@ export function UpcomingEvents() {
                   {event.type}
                 </span>
                 <span className="text-xs text-muted-foreground">
-                  {event.club}
+                  {(event as any).organizer ?? event.venue ?? ''}
                 </span>
               </div>
 

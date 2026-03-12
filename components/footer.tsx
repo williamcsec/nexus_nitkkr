@@ -66,9 +66,23 @@ export function Footer() {
           <p className="text-sm text-muted-foreground">
             Made with care at NIT Kurukshetra
           </p>
-          <p className="text-sm text-muted-foreground">
-            &copy; {new Date().getFullYear()} NITK Nexus. All rights reserved.
-          </p>
+          <div className="flex items-center gap-6">
+            <a
+              href="/club-login"
+              className="text-xs text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+            >
+              Club Portal
+            </a>
+            <a
+              href="/admin/login"
+              className="text-xs text-muted-foreground/40 hover:text-muted-foreground/70 transition-colors"
+            >
+              Admin Portal
+            </a>
+            <p className="text-sm text-muted-foreground">
+              &copy; {new Date().getFullYear()} NITK Nexus. All rights reserved.
+            </p>
+          </div>
         </div>
       </div>
     </footer>

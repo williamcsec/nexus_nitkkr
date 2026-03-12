@@ -1,60 +1,124 @@
-import { getAdminSession, adminLogout } from '../login/actions';
-import { redirect } from 'next/navigation';
-import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Shield, PlusCircle, LogOut, Users } from 'lucide-react';
+import { getAdminSession } from '../login/actions'
+import { redirect } from 'next/navigation'
+import { supabase } from '@/lib/supabaseClient'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Building2, CalendarDays, Users, CheckCircle, Clock } from 'lucide-react'
+import Link from 'next/link'
+
+export const dynamic = 'force-dynamic'
 
 export default async function AdminDashboardPage() {
-    const session = await getAdminSession();
+    const session = await getAdminSession()
+    if (!session) redirect('/admin/login')
 
-    if (!session) {
-        redirect('/admin/login');
-    }
+    const [
+        { count: clubCount },
+        { count: eventCount },
+        { count: studentCount },
+        { count: regCount },
+        { data: recentEvents },
+        { count: pendingVenueCount },
+    ] = await Promise.all([
+        supabase.from('clubs').select('*', { count: 'exact', head: true }),
+        supabase.from('events').select('*', { count: 'exact', head: true }),
+        supabase.from('students').select('*', { count: 'exact', head: true }),
+        supabase.from('registrations').select('*', { count: 'exact', head: true }),
+        supabase.from('events').select('title, status, start_time, club_id').order('created_at', { ascending: false }).limit(5),
+        supabase.from('venue_bookings').select('*', { count: 'exact', head: true }).eq('approval_status', 'Pending'),
+    ])
+
+    const stats = [
+        { label: 'Total Clubs', value: clubCount ?? 0, icon: Building2, color: 'text-indigo-400', bg: 'bg-indigo-500/10', href: '/admin/clubs' },
+        { label: 'Total Events', value: eventCount ?? 0, icon: CalendarDays, color: 'text-emerald-400', bg: 'bg-emerald-500/10', href: '/admin/events' },
+        { label: 'Registered Students', value: studentCount ?? 0, icon: Users, color: 'text-blue-400', bg: 'bg-blue-500/10', href: '/admin/students' },
+        { label: 'Total Registrations', value: regCount ?? 0, icon: CheckCircle, color: 'text-amber-400', bg: 'bg-amber-500/10', href: '/admin/events' },
+    ]
 
     return (
-        <div className="min-h-screen bg-zinc-950 p-6 text-zinc-100">
-            <div className="mx-auto max-w-5xl space-y-8">
-                <header className="flex items-center justify-between border-b border-zinc-800 pb-6">
-                    <div>
-                        <h1 className="text-3xl font-bold tracking-tight">Super Admin Dashboard</h1>
-                        <p className="text-zinc-400">Welcome back, {session.name} ({session.role})</p>
+        <div className="space-y-8">
+            <div>
+                <h1 className="text-3xl font-bold text-white">Dashboard</h1>
+                <p className="text-zinc-400 mt-1">Welcome back, {session.name}. Here's an overview of NITK Nexus.</p>
+            </div>
+
+            {/* Pending alerts */}
+            {(pendingVenueCount ?? 0) > 0 && (
+                <div className="flex items-center gap-3 rounded-lg border border-amber-500/30 bg-amber-500/10 p-4">
+                    <Clock className="h-5 w-5 text-amber-400 flex-shrink-0" />
+                    <div className="flex-1">
+                        <p className="text-sm font-medium text-amber-300">
+                            {pendingVenueCount} pending venue booking{(pendingVenueCount ?? 0) > 1 ? 's' : ''} awaiting approval
+                        </p>
                     </div>
-                    <form action={adminLogout}>
-                        <Button variant="outline" className="border-red-500/20 text-red-400 hover:bg-red-500/10 hover:text-red-300">
-                            <LogOut className="mr-2 h-4 w-4" /> Sign Out
-                        </Button>
-                    </form>
-                </header>
-
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    <Card className="border-zinc-800 bg-zinc-900/50">
-                        <CardHeader>
-                            <Shield className="h-8 w-8 text-indigo-400 mb-2" />
-                            <CardTitle>Security Overview</CardTitle>
-                            <CardDescription className="text-zinc-400">System health and audit logs</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-sm text-zinc-300">All club passwords are now hashed and secure. Lock settings are active.</p>
-                        </CardContent>
-                    </Card>
-
-                    <Card className="border-zinc-800 bg-zinc-900/50">
-                        <CardHeader>
-                            <Users className="h-8 w-8 text-emerald-400 mb-2" />
-                            <CardTitle>Manage Clubs</CardTitle>
-                            <CardDescription className="text-zinc-400">Add, suspend, or manage club accounts</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <Link href="/admin/create-club">
-                                <Button className="w-full bg-emerald-500 hover:bg-emerald-600 text-white">
-                                    <PlusCircle className="mr-2 h-4 w-4" /> Create New Club
-                                </Button>
-                            </Link>
-                        </CardContent>
-                    </Card>
+                    <Link href="/admin/venues" className="text-xs text-amber-400 hover:underline font-medium">
+                        Review →
+                    </Link>
                 </div>
+            )}
+
+            {/* Stats grid */}
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                {stats.map(({ label, value, icon: Icon, color, bg, href }) => (
+                    <Link key={label} href={href}>
+                        <Card className="border-zinc-800 bg-zinc-900/50 hover:border-zinc-700 transition-colors cursor-pointer">
+                            <CardContent className="p-5">
+                                <div className={`inline-flex h-10 w-10 items-center justify-center rounded-lg ${bg} mb-3`}>
+                                    <Icon className={`h-5 w-5 ${color}`} />
+                                </div>
+                                <p className="text-2xl font-bold text-white">{value.toLocaleString()}</p>
+                                <p className="text-sm text-zinc-400">{label}</p>
+                            </CardContent>
+                        </Card>
+                    </Link>
+                ))}
+            </div>
+
+            {/* Quick Actions */}
+            <div className="grid gap-5 md:grid-cols-2">
+                <Card className="border-zinc-800 bg-zinc-900/50">
+                    <CardHeader>
+                        <CardTitle className="text-white text-base">Quick Actions</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                        <Link href="/admin/create-club" className="flex items-center justify-between p-3 rounded-lg bg-zinc-800/50 hover:bg-zinc-800 transition-colors text-sm text-zinc-300 hover:text-white">
+                            <span>➕ Create New Club</span>
+                            <span className="text-zinc-500">→</span>
+                        </Link>
+                        <Link href="/admin/clubs" className="flex items-center justify-between p-3 rounded-lg bg-zinc-800/50 hover:bg-zinc-800 transition-colors text-sm text-zinc-300 hover:text-white">
+                            <span>🔑 View Club Credentials</span>
+                            <span className="text-zinc-500">→</span>
+                        </Link>
+                        <Link href="/admin/venues" className="flex items-center justify-between p-3 rounded-lg bg-zinc-800/50 hover:bg-zinc-800 transition-colors text-sm text-zinc-300 hover:text-white">
+                            <span>📋 Venue Booking Requests</span>
+                            <span className="text-zinc-500">→</span>
+                        </Link>
+                        <Link href="/admin/audit" className="flex items-center justify-between p-3 rounded-lg bg-zinc-800/50 hover:bg-zinc-800 transition-colors text-sm text-zinc-300 hover:text-white">
+                            <span>🛡️ View Audit Log</span>
+                            <span className="text-zinc-500">→</span>
+                        </Link>
+                    </CardContent>
+                </Card>
+
+                <Card className="border-zinc-800 bg-zinc-900/50">
+                    <CardHeader>
+                        <CardTitle className="text-white text-base">Recent Events</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                        {(recentEvents ?? []).map((ev: any) => (
+                            <div key={ev.title} className="flex items-center justify-between p-2 rounded-lg bg-zinc-800/30 text-sm">
+                                <span className="text-zinc-300 truncate max-w-[200px]">{ev.title}</span>
+                                <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${ev.status === 'Completed' ? 'bg-zinc-700 text-zinc-400' :
+                                        ev.status === 'Approved' ? 'bg-emerald-500/20 text-emerald-400' :
+                                            ev.status === 'Live' ? 'bg-blue-500/20 text-blue-400' :
+                                                'bg-amber-500/20 text-amber-400'
+                                    }`}>
+                                    {ev.status}
+                                </span>
+                            </div>
+                        ))}
+                    </CardContent>
+                </Card>
             </div>
         </div>
-    );
+    )
 }

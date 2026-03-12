@@ -67,7 +67,6 @@ function StatItem({
       <Icon className="h-8 w-8 text-primary" />
       <div className="font-mono text-4xl font-bold text-foreground md:text-5xl">
         {count.toLocaleString()}
-        <span className="text-primary">{stat.suffix}</span>
       </div>
       <p className="text-sm text-muted-foreground">{stat.label}</p>
     </div>
