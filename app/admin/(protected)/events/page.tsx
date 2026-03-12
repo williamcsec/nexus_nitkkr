@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { getAdminSession } from '../login/actions'
+import { getAdminSession } from '../../login/actions'
 import { supabase } from '@/lib/supabaseClient'
 import { AdminEventsClient } from './events-client'
 

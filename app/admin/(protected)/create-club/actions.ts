@@ -1,7 +1,7 @@
 'use server';
 
 import { supabase } from '@/lib/supabaseClient';
-import { getAdminSession } from '../login/actions';
+import { getAdminSession } from '../../login/actions';
 import bcrypt from 'bcryptjs';
 
 export async function createClubAction(formData: FormData) {

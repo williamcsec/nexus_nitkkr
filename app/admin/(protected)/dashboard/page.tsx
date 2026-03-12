@@ -1,4 +1,4 @@
-import { getAdminSession } from '../login/actions'
+import { getAdminSession } from '../../login/actions'
 import { redirect } from 'next/navigation'
 import { supabase } from '@/lib/supabaseClient'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
